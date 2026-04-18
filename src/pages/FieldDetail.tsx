@@ -5,6 +5,8 @@ import { ArrowLeft, MapPin, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AppHeader } from "@/components/AppHeader";
+import { Footer } from "@/components/Footer";
+import { BackButton } from "@/components/BackButton";
 import { SeverityBadge } from "@/components/SeverityBadge";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/i18n/LanguageProvider";
@@ -33,10 +35,10 @@ const FieldDetail = () => {
   }));
 
   return (
-    <div className="min-h-screen bg-soil">
+    <div className="flex min-h-screen flex-col bg-soil">
       <AppHeader />
-      <main className="container max-w-3xl space-y-6 py-8">
-        <Link to="/dashboard"><Button variant="ghost" size="sm" className="gap-2"><ArrowLeft className="h-4 w-4" />{t("dashboard")}</Button></Link>
+      <main className="container max-w-3xl flex-1 space-y-6 py-8">
+        <BackButton to="/dashboard" />
 
         {field && (
           <Card className="p-6 shadow-soft">
@@ -87,6 +89,7 @@ const FieldDetail = () => {
           )}
         </section>
       </main>
+      <Footer />
     </div>
   );
 };

@@ -12,7 +12,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { Loader2, Database, Users, FileText, Image as ImageIcon, ShieldAlert, Sparkles } from "lucide-react";
+import { Loader2, Database, Users, FileText, Image as ImageIcon, ShieldAlert, Sparkles, LifeBuoy } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Admin = () => {
   const { user, loading } = useAuth();
@@ -59,11 +60,12 @@ const Admin = () => {
           </div>
 
           <Tabs defaultValue="overview">
-            <TabsList className="grid w-full grid-cols-6">
+            <TabsList className="grid w-full grid-cols-7">
               <TabsTrigger value="overview" className="gap-2"><Sparkles className="h-4 w-4" />Overview</TabsTrigger>
               <TabsTrigger value="rag" className="gap-2"><Database className="h-4 w-4" />RAG</TabsTrigger>
               <TabsTrigger value="refs" className="gap-2"><ImageIcon className="h-4 w-4" />References</TabsTrigger>
               <TabsTrigger value="scans" className="gap-2"><FileText className="h-4 w-4" />Scans</TabsTrigger>
+              <TabsTrigger value="tickets" className="gap-2"><LifeBuoy className="h-4 w-4" />Tickets</TabsTrigger>
               <TabsTrigger value="users" className="gap-2"><Users className="h-4 w-4" />Users</TabsTrigger>
               <TabsTrigger value="audit" className="gap-2"><ShieldAlert className="h-4 w-4" />Audit</TabsTrigger>
             </TabsList>
@@ -72,6 +74,7 @@ const Admin = () => {
             <TabsContent value="rag" className="pt-4"><RagTab /></TabsContent>
             <TabsContent value="refs" className="pt-4"><RefsTab /></TabsContent>
             <TabsContent value="scans" className="pt-4"><ScansTab /></TabsContent>
+            <TabsContent value="tickets" className="pt-4"><TicketsTab /></TabsContent>
             <TabsContent value="users" className="pt-4"><UsersTab /></TabsContent>
             <TabsContent value="audit" className="pt-4"><AuditTab /></TabsContent>
           </Tabs>
