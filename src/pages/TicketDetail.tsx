@@ -58,7 +58,7 @@ const TicketDetail = () => {
     setBody("");
   };
 
-  const setStatus = async (status: string) => {
+  const setStatus = async (status: "open" | "in_progress" | "resolved" | "closed") => {
     if (!id) return;
     const { error } = await supabase.from("tickets").update({ status }).eq("id", id);
     if (error) toast({ title: error.message, variant: "destructive" });
