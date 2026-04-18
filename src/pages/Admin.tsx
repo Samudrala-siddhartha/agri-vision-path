@@ -227,6 +227,33 @@ function ScansTab() {
   );
 }
 
+function TicketsTab() {
+  const [rows, setRows] = useState<any[]>([]);
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase.from("tickets").select("id,subject,category,priority,status,created_at,user_id").order("created_at", { ascending: false }).limit(100);
+      setRows(data ?? []);
+    })();
+  }, []);
+  return (
+    <Card className="overflow-hidden">
+      <div className="grid grid-cols-6 gap-2 border-b bg-muted/40 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        <span>Date</span><span className="col-span-2">Subject</span><span>Category</span><span>Priority</span><span>Status</span>
+      </div>
+      {rows.map((r) => (
+        <Link key={r.id} to={`/tickets/${r.id}`} className="grid grid-cols-6 gap-2 border-b px-4 py-2 text-sm hover:bg-muted/40">
+          <span>{new Date(r.created_at).toLocaleDateString()}</span>
+          <span className="col-span-2 truncate font-medium">{r.subject}</span>
+          <span><Badge variant="outline">{r.category}</Badge></span>
+          <span><Badge variant="secondary">{r.priority}</Badge></span>
+          <span><Badge>{r.status}</Badge></span>
+        </Link>
+      ))}
+      {!rows.length && <p className="p-4 text-sm text-muted-foreground">No tickets yet.</p>}
+    </Card>
+  );
+}
+
 function UsersTab() {
   const [rows, setRows] = useState<any[]>([]);
   useEffect(() => {
