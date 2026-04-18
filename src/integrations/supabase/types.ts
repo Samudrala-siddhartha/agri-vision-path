@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string
+          id: string
+          ip: string | null
+          meta: Json
+          target: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          ip?: string | null
+          meta?: Json
+          target?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          ip?: string | null
+          meta?: Json
+          target?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       disease_reference: {
         Row: {
           created_at: string
@@ -53,6 +86,33 @@ export type Database = {
           source?: string | null
           typical_severity?: string | null
           visual_signs?: string | null
+        }
+        Relationships: []
+      }
+      disease_reference_images: {
+        Row: {
+          created_at: string
+          crop: string
+          disease_key: string
+          id: string
+          image_url: string
+          source: string | null
+        }
+        Insert: {
+          created_at?: string
+          crop: string
+          disease_key: string
+          id?: string
+          image_url: string
+          source?: string | null
+        }
+        Update: {
+          created_at?: string
+          crop?: string
+          disease_key?: string
+          id?: string
+          image_url?: string
+          source?: string | null
         }
         Relationships: []
       }
@@ -122,6 +182,90 @@ export type Database = {
         }
         Relationships: []
       }
+      rag_documents: {
+        Row: {
+          chunk: string
+          created_at: string
+          crop: string
+          disease_key: string | null
+          embedding: string | null
+          id: string
+          lang: string
+          source_url: string | null
+          title: string | null
+        }
+        Insert: {
+          chunk: string
+          created_at?: string
+          crop: string
+          disease_key?: string | null
+          embedding?: string | null
+          id?: string
+          lang?: string
+          source_url?: string | null
+          title?: string | null
+        }
+        Update: {
+          chunk?: string
+          created_at?: string
+          crop?: string
+          disease_key?: string | null
+          embedding?: string | null
+          id?: string
+          lang?: string
+          source_url?: string | null
+          title?: string | null
+        }
+        Relationships: []
+      }
+      rag_image_embeddings: {
+        Row: {
+          created_at: string
+          crop: string
+          disease_key: string
+          embedding: string | null
+          id: string
+          image_url: string
+        }
+        Insert: {
+          created_at?: string
+          crop: string
+          disease_key: string
+          embedding?: string | null
+          id?: string
+          image_url: string
+        }
+        Update: {
+          created_at?: string
+          crop?: string
+          disease_key?: string
+          embedding?: string | null
+          id?: string
+          image_url?: string
+        }
+        Relationships: []
+      }
+      rate_limits: {
+        Row: {
+          count: number
+          id: string
+          key: string
+          window_start: string
+        }
+        Insert: {
+          count?: number
+          id?: string
+          key: string
+          window_start?: string
+        }
+        Update: {
+          count?: number
+          id?: string
+          key?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       scans: {
         Row: {
           confidence: number | null
@@ -175,15 +319,76 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      check_rate_limit: {
+        Args: { _key: string; _max: number; _window_seconds: number }
+        Returns: boolean
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      match_rag_documents: {
+        Args: {
+          match_count?: number
+          match_crop: string
+          query_embedding: string
+        }
+        Returns: {
+          chunk: string
+          crop: string
+          disease_key: string
+          id: string
+          similarity: number
+          source_url: string
+          title: string
+        }[]
+      }
+      match_rag_images: {
+        Args: {
+          match_count?: number
+          match_crop: string
+          query_embedding: string
+        }
+        Returns: {
+          crop: string
+          disease_key: string
+          id: string
+          image_url: string
+          similarity: number
+        }[]
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -310,6 +515,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
