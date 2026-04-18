@@ -14,7 +14,167 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      disease_reference: {
+        Row: {
+          created_at: string
+          crop: string
+          description: string | null
+          disease_key: string
+          id: string
+          name_en: string
+          name_hi: string | null
+          name_te: string | null
+          source: string | null
+          typical_severity: string | null
+          visual_signs: string | null
+        }
+        Insert: {
+          created_at?: string
+          crop: string
+          description?: string | null
+          disease_key: string
+          id?: string
+          name_en: string
+          name_hi?: string | null
+          name_te?: string | null
+          source?: string | null
+          typical_severity?: string | null
+          visual_signs?: string | null
+        }
+        Update: {
+          created_at?: string
+          crop?: string
+          description?: string | null
+          disease_key?: string
+          id?: string
+          name_en?: string
+          name_hi?: string | null
+          name_te?: string | null
+          source?: string | null
+          typical_severity?: string | null
+          visual_signs?: string | null
+        }
+        Relationships: []
+      }
+      fields: {
+        Row: {
+          created_at: string
+          crop: string
+          id: string
+          latitude: number | null
+          location: string | null
+          longitude: number | null
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          crop: string
+          id?: string
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          crop?: string
+          id?: string
+          latitude?: number | null
+          location?: string | null
+          longitude?: number | null
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          preferred_language: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          preferred_language?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          preferred_language?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      scans: {
+        Row: {
+          confidence: number | null
+          created_at: string
+          crop: string
+          diagnosis: Json | null
+          disease_name: string | null
+          field_id: string | null
+          id: string
+          image_urls: string[]
+          interview: Json
+          language: string
+          severity: string | null
+          user_id: string
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string
+          crop: string
+          diagnosis?: Json | null
+          disease_name?: string | null
+          field_id?: string | null
+          id?: string
+          image_urls?: string[]
+          interview?: Json
+          language?: string
+          severity?: string | null
+          user_id: string
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string
+          crop?: string
+          diagnosis?: Json | null
+          disease_name?: string | null
+          field_id?: string | null
+          id?: string
+          image_urls?: string[]
+          interview?: Json
+          language?: string
+          severity?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scans_field_id_fkey"
+            columns: ["field_id"]
+            isOneToOne: false
+            referencedRelation: "fields"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
