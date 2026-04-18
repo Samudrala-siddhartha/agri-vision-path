@@ -1,0 +1,71 @@
+export type Lang = "en" | "hi" | "te";
+
+export const LANGS: { code: Lang; label: string; native: string }[] = [
+  { code: "en", label: "English", native: "English" },
+  { code: "hi", label: "Hindi", native: "हिन्दी" },
+  { code: "te", label: "Telugu", native: "తెలుగు" },
+];
+
+type Dict = Record<string, { en: string; hi: string; te: string }>;
+
+export const t: Dict = {
+  app_name: { en: "AgriPulse", hi: "एग्रीपल्स", te: "అగ్రిపల్స్" },
+  app_tagline: { en: "AI crop diagnosis for every farmer", hi: "हर किसान के लिए AI फसल निदान", te: "ప్రతి రైతుకి AI పంట నిర్ధారణ" },
+  get_started: { en: "Get started", hi: "शुरू करें", te: "ప్రారంభించండి" },
+  sign_in: { en: "Sign in", hi: "साइन इन", te: "సైన్ ఇన్" },
+  sign_up: { en: "Sign up", hi: "साइन अप", te: "సైన్ అప్" },
+  sign_out: { en: "Sign out", hi: "साइन आउट", te: "సైన్ అవుట్" },
+  email: { en: "Email", hi: "ईमेल", te: "ఇమెయిల్" },
+  password: { en: "Password", hi: "पासवर्ड", te: "పాస్‌వర్డ్" },
+  continue_with_google: { en: "Continue with Google", hi: "Google के साथ जारी रखें", te: "Googleతో కొనసాగించండి" },
+  dashboard: { en: "Dashboard", hi: "डैशबोर्ड", te: "డాష్‌బోర్డ్" },
+  new_scan: { en: "New scan", hi: "नया स्कैन", te: "కొత్త స్కాన్" },
+  recent_scans: { en: "Recent scans", hi: "हाल के स्कैन", te: "ఇటీవలి స్కాన్‌లు" },
+  my_fields: { en: "My fields", hi: "मेरे खेत", te: "నా పొలాలు" },
+  add_field: { en: "Add field", hi: "खेत जोड़ें", te: "పొలం జోడించండి" },
+  field_name: { en: "Field name", hi: "खेत का नाम", te: "పొలం పేరు" },
+  crop: { en: "Crop", hi: "फसल", te: "పంట" },
+  paddy: { en: "Paddy", hi: "धान", te: "వరి" },
+  chili: { en: "Chili", hi: "मिर्च", te: "మిర్చి" },
+  wheat: { en: "Wheat", hi: "गेहूं", te: "గోధుమ" },
+  step_crop: { en: "Select your crop", hi: "अपनी फसल चुनें", te: "మీ పంటను ఎంచుకోండి" },
+  step_context: { en: "Tell us about it", hi: "इसके बारे में बताएं", te: "దీని గురించి చెప్పండి" },
+  step_capture: { en: "Capture leaf photos", hi: "पत्ती की फ़ोटो लें", te: "ఆకు ఫోటోలు తీయండి" },
+  crop_age: { en: "Crop age (days)", hi: "फसल आयु (दिन)", te: "పంట వయస్సు (రోజులు)" },
+  rained_recently: { en: "Rained in last 48 hours?", hi: "पिछले 48 घंटों में बारिश हुई?", te: "గత 48 గంటల్లో వర్షం పడిందా?" },
+  growth_stage: { en: "Growth stage", hi: "वृद्धि अवस्था", te: "ఎదుగుదల దశ" },
+  seedling: { en: "Seedling", hi: "अंकुर", te: "మొలక" },
+  vegetative: { en: "Vegetative", hi: "वानस्पतिक", te: "ఏపుగా పెరిగే" },
+  flowering: { en: "Flowering", hi: "पुष्पण", te: "పుష్పించే" },
+  maturity: { en: "Maturity", hi: "परिपक्वता", te: "పక్వం" },
+  upload_photos: { en: "Upload photos", hi: "फ़ोटो अपलोड करें", te: "ఫోటోలు అప్‌లోడ్ చేయండి" },
+  diagnose: { en: "Diagnose now", hi: "अभी निदान करें", te: "ఇప్పుడే నిర్ధారించండి" },
+  diagnosing: { en: "Analyzing your crop…", hi: "आपकी फसल का विश्लेषण…", te: "మీ పంటను విశ్లేషిస్తోంది…" },
+  diagnosis: { en: "Diagnosis", hi: "निदान", te: "నిర్ధారణ" },
+  confidence: { en: "Confidence", hi: "विश्वास", te: "విశ్వాసం" },
+  severity: { en: "Severity", hi: "गंभीरता", te: "తీవ్రత" },
+  chemical: { en: "Chemical", hi: "रासायनिक", te: "రసాయన" },
+  organic: { en: "Organic", hi: "जैविक", te: "సేంద్రీయ" },
+  warnings: { en: "Warnings", hi: "चेतावनी", te: "హెచ్చరికలు" },
+  next: { en: "Next", hi: "आगे", te: "తదుపరి" },
+  back: { en: "Back", hi: "वापस", te: "వెనుకకు" },
+  yes: { en: "Yes", hi: "हाँ", te: "అవును" },
+  no: { en: "No", hi: "नहीं", te: "కాదు" },
+  no_scans_yet: { en: "No scans yet. Tap New Scan to begin.", hi: "अभी कोई स्कैन नहीं। शुरू करने के लिए नया स्कैन दबाएँ।", te: "ఇంకా స్కాన్‌లు లేవు. ప్రారంభించడానికి కొత్త స్కాన్ నొక్కండి." },
+  read_aloud: { en: "Read aloud", hi: "ज़ोर से पढ़ें", te: "బిగ్గరగా చదవండి" },
+  view_history: { en: "View history", hi: "इतिहास देखें", te: "చరిత్రను చూడండి" },
+  no_fields_yet: { en: "Add your first field to get started.", hi: "शुरू करने के लिए अपना पहला खेत जोड़ें।", te: "ప్రారంభించడానికి మీ మొదటి పొలాన్ని జోడించండి." },
+  language: { en: "Language", hi: "भाषा", te: "భాష" },
+  hello: { en: "Welcome back", hi: "वापसी पर स्वागत है", te: "తిరిగి స్వాగతం" },
+  scan_failed: { en: "Diagnosis failed. Please try again.", hi: "निदान विफल। कृपया पुनः प्रयास करें।", te: "నిర్ధారణ విఫలమైంది. దయచేసి మళ్ళీ ప్రయత్నించండి." },
+  upload_at_least_one: { en: "Please upload at least one photo.", hi: "कृपया कम से कम एक फ़ोटो अपलोड करें।", te: "దయచేసి కనీసం ఒక ఫోటోను అప్‌లోడ్ చేయండి." },
+  affected_areas: { en: "Affected areas", hi: "प्रभावित क्षेत्र", te: "ప్రభావిత ప్రాంతాలు" },
+  none: { en: "None", hi: "कोई नहीं", te: "ఏదీ లేదు" },
+  low: { en: "Low", hi: "कम", te: "తక్కువ" },
+  medium: { en: "Medium", hi: "मध्यम", te: "మధ్యస్థం" },
+  high: { en: "High", hi: "उच्च", te: "ఎక్కువ" },
+};
+
+export function tr(key: keyof typeof t, lang: Lang): string {
+  return t[key]?.[lang] ?? t[key]?.en ?? key;
+}
