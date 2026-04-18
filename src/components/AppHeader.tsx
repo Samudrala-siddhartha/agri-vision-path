@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Sprout, LogOut, LayoutDashboard, ShieldCheck } from "lucide-react";
+import { Sprout, LogOut, LayoutDashboard, ShieldCheck, LifeBuoy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { useLang } from "@/i18n/LanguageProvider";
@@ -33,6 +33,12 @@ export function AppHeader() {
             <Button variant="ghost" size="sm" onClick={() => nav("/dashboard")} className="gap-2">
               <LayoutDashboard className="h-4 w-4" />
               <span className="hidden sm:inline">{t("dashboard")}</span>
+            </Button>
+          )}
+          {user && (
+            <Button variant="ghost" size="sm" onClick={() => nav("/tickets")} className="gap-2">
+              <LifeBuoy className="h-4 w-4" />
+              <span className="hidden sm:inline">{t("support")}</span>
             </Button>
           )}
           {isAdmin && (

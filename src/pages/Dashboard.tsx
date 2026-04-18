@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AppHeader } from "@/components/AppHeader";
+import { Footer } from "@/components/Footer";
 import { SeverityBadge } from "@/components/SeverityBadge";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/auth/AuthProvider";
@@ -47,9 +48,9 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-soil">
+    <div className="flex min-h-screen flex-col bg-soil">
       <AppHeader />
-      <main className="container space-y-8 py-8">
+      <main className="container flex-1 space-y-8 py-8">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-sm text-muted-foreground">{t("hello")}</p>
@@ -134,6 +135,7 @@ const Dashboard = () => {
           )}
         </section>
       </main>
+      <Footer />
     </div>
   );
 };

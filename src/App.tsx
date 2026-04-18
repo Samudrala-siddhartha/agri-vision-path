@@ -13,6 +13,9 @@ import NewScan from "./pages/NewScan";
 import ScanResult from "./pages/ScanResult";
 import FieldDetail from "./pages/FieldDetail";
 import Admin from "./pages/Admin";
+import Tickets from "./pages/Tickets";
+import NewTicket from "./pages/NewTicket";
+import TicketDetail from "./pages/TicketDetail";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -32,6 +35,9 @@ const App = () => (
               <Route path="/scan/new" element={<RequireAuth><NewScan /></RequireAuth>} />
               <Route path="/scan/:id" element={<RequireAuth><ScanResult /></RequireAuth>} />
               <Route path="/field/:id" element={<RequireAuth><FieldDetail /></RequireAuth>} />
+              <Route path="/tickets" element={<RequireAuth><Tickets /></RequireAuth>} />
+              <Route path="/tickets/new" element={<RequireAuth><NewTicket /></RequireAuth>} />
+              <Route path="/tickets/:id" element={<RequireAuth><TicketDetail /></RequireAuth>} />
               <Route path="/admin" element={<RequireAuth><Admin /></RequireAuth>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
