@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Camera, Loader2, Upload, X, Sprout } from "lucide-react";
+import { ArrowRight, Camera, Loader2, Upload, X, Sprout } from "lucide-react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
@@ -9,6 +10,9 @@ import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AppHeader } from "@/components/AppHeader";
+import { Footer } from "@/components/Footer";
+import { BackButton } from "@/components/BackButton";
+import { CameraCapture } from "@/components/CameraCapture";
 import { useAuth } from "@/auth/AuthProvider";
 import { useLang } from "@/i18n/LanguageProvider";
 import { supabase } from "@/integrations/supabase/client";
@@ -29,10 +33,15 @@ const NewScan = () => {
   const [stage, setStage] = useState<Stage>("vegetative");
   const [files, setFiles] = useState<File[]>([]);
   const [busy, setBusy] = useState(false);
+  const [camOpen, setCamOpen] = useState(false);
 
   const onPick = (e: React.ChangeEvent<HTMLInputElement>) => {
     const list = Array.from(e.target.files ?? []).slice(0, 5);
     setFiles((prev) => [...prev, ...list].slice(0, 5));
+  };
+
+  const onCameraCapture = (file: File) => {
+    setFiles((prev) => [...prev, file].slice(0, 5));
   };
 
   const submit = async () => {
@@ -40,7 +49,6 @@ const NewScan = () => {
     if (files.length === 0) return toast({ title: t("upload_at_least_one"), variant: "destructive" });
     setBusy(true);
     try {
-      // Upload images
       const urls: string[] = [];
       const imagePayload: { mime_type: string; data: string }[] = [];
       for (const f of files) {
@@ -52,14 +60,11 @@ const NewScan = () => {
         const b64 = btoa(String.fromCharCode(...new Uint8Array(buf)));
         imagePayload.push({ mime_type: f.type || "image/jpeg", data: b64 });
       }
-
-      // Diagnose
       const { data, error } = await supabase.functions.invoke("diagnose-crop", {
         body: { crop, interview: { age_days: age, rained_recently: rained, growth_stage: stage }, language: lang, images: imagePayload },
       });
       if (error) throw error;
 
-      // Save scan
       const { data: scan, error: insErr } = await supabase
         .from("scans")
         .insert({
@@ -87,9 +92,10 @@ const NewScan = () => {
   const steps = [t("step_crop"), t("step_context"), t("step_capture")];
 
   return (
-    <div className="min-h-screen bg-soil">
+    <div className="flex min-h-screen flex-col bg-soil">
       <AppHeader />
-      <main className="container max-w-2xl py-8">
+      <main className="container max-w-2xl flex-1 py-8">
+        <div className="mb-4"><BackButton to="/dashboard" /></div>
         <div className="mb-6">
           <Progress value={((step + 1) / 3) * 100} className="h-2" />
           <p className="mt-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">Step {step + 1} of 3 · {steps[step]}</p>
@@ -97,25 +103,30 @@ const NewScan = () => {
 
         <Card className="p-6 shadow-elevated md:p-8">
           {step === 0 && (
-            <div className="space-y-6">
+            <motion.div initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
               <h2 className="font-display text-2xl font-bold">{t("step_crop")}</h2>
               <div className="grid grid-cols-3 gap-3">
                 {cropCards.map(({ c, emoji }) => (
-                  <button key={c} onClick={() => setCrop(c)}
+                  <motion.button
+                    key={c}
+                    onClick={() => setCrop(c)}
+                    whileHover={{ y: -4, scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
                     className={cn(
                       "flex flex-col items-center gap-2 rounded-2xl border-2 p-5 transition",
                       crop === c ? "border-primary bg-primary/10 shadow-soft" : "border-border hover:border-primary/50"
-                    )}>
+                    )}
+                  >
                     <span className="text-4xl">{emoji}</span>
                     <span className="font-semibold">{t(c)}</span>
-                  </button>
+                  </motion.button>
                 ))}
               </div>
-            </div>
+            </motion.div>
           )}
 
           {step === 1 && (
-            <div className="space-y-6">
+            <motion.div initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
               <h2 className="font-display text-2xl font-bold">{t("step_context")}</h2>
               <div className="space-y-3">
                 <Label>{t("crop_age")}: <span className="font-bold text-primary">{age}</span></Label>
@@ -134,39 +145,64 @@ const NewScan = () => {
                   </SelectContent>
                 </Select>
               </div>
-            </div>
+            </motion.div>
           )}
 
           {step === 2 && (
-            <div className="space-y-6">
+            <motion.div initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
               <h2 className="font-display text-2xl font-bold">{t("step_capture")}</h2>
-              <label className="flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-primary/40 bg-primary/5 p-10 text-center transition hover:bg-primary/10">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-hero shadow-soft">
-                  <Upload className="h-6 w-6 text-primary-foreground" />
-                </div>
-                <span className="font-semibold">{t("upload_photos")}</span>
-                <span className="text-xs text-muted-foreground">Up to 5 images · JPG/PNG</span>
-                <input type="file" accept="image/*" multiple capture="environment" className="hidden" onChange={onPick} />
-              </label>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <motion.button
+                  type="button"
+                  onClick={() => setCamOpen(true)}
+                  whileHover={{ y: -3, scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-primary bg-primary/10 p-8 text-center"
+                >
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-hero shadow-elevated">
+                    <Camera className="h-6 w-6 text-primary-foreground" />
+                  </div>
+                  <span className="font-semibold">{t("open_camera")}</span>
+                  <span className="text-xs text-muted-foreground">Live capture · best quality</span>
+                </motion.button>
+
+                <label className="flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-primary/40 bg-primary/5 p-8 text-center transition hover:bg-primary/10">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-muted">
+                    <Upload className="h-6 w-6 text-primary" />
+                  </div>
+                  <span className="font-semibold">{t("upload_photos")}</span>
+                  <span className="text-xs text-muted-foreground">Up to 5 images · JPG/PNG</span>
+                  <input type="file" accept="image/*" multiple capture="environment" className="hidden" onChange={onPick} />
+                </label>
+              </div>
+
               {files.length > 0 && (
                 <div className="grid grid-cols-3 gap-3">
                   {files.map((f, i) => (
-                    <div key={i} className="group relative aspect-square overflow-hidden rounded-xl border">
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="group relative aspect-square overflow-hidden rounded-xl border"
+                    >
                       <img src={URL.createObjectURL(f)} alt="preview" className="h-full w-full object-cover" />
-                      <button onClick={() => setFiles((p) => p.filter((_, j) => j !== i))}
-                        className="absolute right-1 top-1 rounded-full bg-background/90 p-1 opacity-0 transition group-hover:opacity-100">
+                      <button
+                        onClick={() => setFiles((p) => p.filter((_, j) => j !== i))}
+                        className="absolute right-1 top-1 rounded-full bg-background/90 p-1 opacity-0 transition group-hover:opacity-100"
+                        aria-label="remove"
+                      >
                         <X className="h-3 w-3" />
                       </button>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               )}
-            </div>
+            </motion.div>
           )}
 
           <div className="mt-8 flex items-center justify-between">
             <Button variant="ghost" disabled={step === 0 || busy} onClick={() => setStep((s) => s - 1)} className="gap-2">
-              <ArrowLeft className="h-4 w-4" /> {t("back")}
+              {t("back")}
             </Button>
             {step < 2 ? (
               <Button onClick={() => setStep((s) => s + 1)} className="gap-2">
@@ -187,6 +223,9 @@ const NewScan = () => {
           </div>
         )}
       </main>
+      <Footer />
+
+      <CameraCapture open={camOpen} onOpenChange={setCamOpen} onCapture={onCameraCapture} />
     </div>
   );
 };
