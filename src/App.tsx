@@ -12,6 +12,7 @@ import Dashboard from "./pages/Dashboard";
 import NewScan from "./pages/NewScan";
 import ScanResult from "./pages/ScanResult";
 import FieldDetail from "./pages/FieldDetail";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
               <Route path="/scan/new" element={<RequireAuth><NewScan /></RequireAuth>} />
               <Route path="/scan/:id" element={<RequireAuth><ScanResult /></RequireAuth>} />
               <Route path="/field/:id" element={<RequireAuth><FieldDetail /></RequireAuth>} />
+              <Route path="/admin" element={<RequireAuth><Admin /></RequireAuth>} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
