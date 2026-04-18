@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Volume2, Beaker, Leaf, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Volume2, Beaker, Leaf, AlertTriangle, BookOpen, Images } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { AppHeader } from "@/components/AppHeader";
 import { SeverityBadge } from "@/components/SeverityBadge";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/i18n/LanguageProvider";
 import { Lang } from "@/i18n/translations";
+
+type Source = { title?: string; source_url?: string; disease_key?: string; snippet?: string };
+type SimilarImg = { image_url: string; disease_key?: string; similarity?: number };
 
 type Diagnosis = {
   disease_name: string;
@@ -19,6 +23,8 @@ type Diagnosis = {
   affected_regions: string[];
   remedies: { chemical: string[]; organic: string[] };
   warnings: string[];
+  sources?: Source[];
+  similar_images?: SimilarImg[];
 };
 
 const ScanResult = () => {
@@ -126,6 +132,46 @@ const ScanResult = () => {
                 )) : <p className="text-sm text-muted-foreground">—</p>}
               </TabsContent>
             </Tabs>
+
+            {(d?.sources?.length || d?.similar_images?.length) ? (
+              <Accordion type="single" collapsible className="mt-6">
+                {d?.sources?.length ? (
+                  <AccordionItem value="sources">
+                    <AccordionTrigger className="gap-2"><BookOpen className="h-4 w-4" />Knowledge sources ({d.sources.length})</AccordionTrigger>
+                    <AccordionContent>
+                      <div className="space-y-2">
+                        {d.sources.map((s, i) => (
+                          <div key={i} className="rounded-xl border bg-muted/30 p-3 text-sm">
+                            <p className="font-semibold">[{i + 1}] {s.title || s.disease_key || "Reference"}</p>
+                            {s.snippet && <p className="mt-1 text-muted-foreground">{s.snippet}…</p>}
+                            {s.source_url && (
+                              <a href={s.source_url} target="_blank" rel="noreferrer" className="mt-1 inline-block text-xs text-primary underline">{s.source_url}</a>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                ) : null}
+                {d?.similar_images?.length ? (
+                  <AccordionItem value="similar">
+                    <AccordionTrigger className="gap-2"><Images className="h-4 w-4" />Similar reference images</AccordionTrigger>
+                    <AccordionContent>
+                      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                        {d.similar_images.map((s, i) => (
+                          <div key={i} className="overflow-hidden rounded-xl border bg-background">
+                            <div className="aspect-square">
+                              <img src={s.image_url} alt={s.disease_key ?? `ref-${i}`} loading="lazy" className="h-full w-full object-cover" />
+                            </div>
+                            <p className="px-2 py-1 text-[11px] text-muted-foreground">{s.disease_key} {typeof s.similarity === "number" ? `· ${Math.round(s.similarity * 100)}%` : ""}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                ) : null}
+              </Accordion>
+            ) : null}
           </div>
         </Card>
       </main>
