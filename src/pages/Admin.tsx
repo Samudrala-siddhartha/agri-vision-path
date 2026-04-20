@@ -231,22 +231,47 @@ function TicketsTab() {
   const [rows, setRows] = useState<any[]>([]);
   useEffect(() => {
     (async () => {
-      const { data } = await supabase.from("tickets").select("id,subject,category,priority,status,created_at,user_id").order("created_at", { ascending: false }).limit(100);
-      setRows(data ?? []);
+      const { data: tickets } = await supabase
+        .from("tickets")
+        .select("id,subject,category,priority,status,created_at,user_id")
+        .order("created_at", { ascending: false })
+        .limit(100);
+      const list = tickets ?? [];
+      const ids = Array.from(new Set(list.map((t) => t.user_id)));
+      const profMap = new Map<string, any>();
+      if (ids.length) {
+        const { data: profs } = await supabase
+          .from("profiles")
+          .select("user_id,display_name,preferred_language,created_at")
+          .in("user_id", ids);
+        (profs ?? []).forEach((p) => profMap.set(p.user_id, p));
+      }
+      setRows(list.map((t) => ({ ...t, profile: profMap.get(t.user_id) })));
     })();
   }, []);
   return (
     <Card className="overflow-hidden">
-      <div className="grid grid-cols-6 gap-2 border-b bg-muted/40 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-        <span>Date</span><span className="col-span-2">Subject</span><span>Category</span><span>Priority</span><span>Status</span>
+      <div className="grid grid-cols-12 gap-2 border-b bg-muted/40 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        <span className="col-span-2">Date</span>
+        <span className="col-span-3">Subject</span>
+        <span className="col-span-3">Account holder</span>
+        <span className="col-span-1">Lang</span>
+        <span className="col-span-1">Cat.</span>
+        <span className="col-span-1">Prio</span>
+        <span className="col-span-1">Status</span>
       </div>
       {rows.map((r) => (
-        <Link key={r.id} to={`/tickets/${r.id}`} className="grid grid-cols-6 gap-2 border-b px-4 py-2 text-sm hover:bg-muted/40">
-          <span>{new Date(r.created_at).toLocaleDateString()}</span>
-          <span className="col-span-2 truncate font-medium">{r.subject}</span>
-          <span><Badge variant="outline">{r.category}</Badge></span>
-          <span><Badge variant="secondary">{r.priority}</Badge></span>
-          <span><Badge>{r.status}</Badge></span>
+        <Link key={r.id} to={`/tickets/${r.id}`} className="grid grid-cols-12 items-center gap-2 border-b px-4 py-3 text-sm hover:bg-muted/40">
+          <span className="col-span-2 text-xs">{new Date(r.created_at).toLocaleString()}</span>
+          <span className="col-span-3 truncate font-medium">{r.subject}</span>
+          <span className="col-span-3 min-w-0">
+            <p className="truncate font-medium">{r.profile?.display_name ?? "—"}</p>
+            <p className="truncate font-mono text-[10px] text-muted-foreground">{r.user_id}</p>
+          </span>
+          <span className="col-span-1 text-xs uppercase">{r.profile?.preferred_language ?? "—"}</span>
+          <span className="col-span-1"><Badge variant="outline" className="text-[10px]">{r.category}</Badge></span>
+          <span className="col-span-1"><Badge variant="secondary" className="text-[10px]">{r.priority}</Badge></span>
+          <span className="col-span-1"><Badge className="text-[10px]">{r.status}</Badge></span>
         </Link>
       ))}
       {!rows.length && <p className="p-4 text-sm text-muted-foreground">No tickets yet.</p>}

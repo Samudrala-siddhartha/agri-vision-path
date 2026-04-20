@@ -18,6 +18,7 @@ const TicketDetail = () => {
   const { user } = useAuth();
   const { t } = useLang();
   const [ticket, setTicket] = useState<any>(null);
+  const [requester, setRequester] = useState<any>(null);
   const [messages, setMessages] = useState<any[]>([]);
   const [body, setBody] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
@@ -28,6 +29,14 @@ const TicketDetail = () => {
     if (!id) return;
     const { data: tk } = await supabase.from("tickets").select("*").eq("id", id).single();
     setTicket(tk);
+    if (tk?.user_id) {
+      const { data: prof } = await supabase
+        .from("profiles")
+        .select("user_id,display_name,preferred_language,created_at,avatar_url")
+        .eq("user_id", tk.user_id)
+        .maybeSingle();
+      setRequester(prof);
+    }
     const { data: ms } = await supabase.from("ticket_messages").select("*").eq("ticket_id", id).order("created_at", { ascending: true });
     setMessages(ms ?? []);
     setTimeout(() => endRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
@@ -101,6 +110,41 @@ const TicketDetail = () => {
             )}
           </div>
         </Card>
+
+        {isAdmin && (
+          <Card className="p-5">
+            <h2 className="mb-3 font-display text-base font-bold">{t("requester")}</h2>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <UserIcon className="h-5 w-5" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t("account_holder")}</p>
+                  <p className="truncate font-semibold">{requester?.display_name ?? "—"}</p>
+                </div>
+              </div>
+              <div>
+                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t("preferred_lang")}</p>
+                <p className="font-mono text-sm uppercase">{requester?.preferred_language ?? "—"}</p>
+              </div>
+              <div className="sm:col-span-2">
+                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t("user_id")}</p>
+                <p className="break-all font-mono text-xs text-foreground/80">{ticket.user_id}</p>
+              </div>
+              {requester?.created_at && (
+                <div>
+                  <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t("joined")}</p>
+                  <p className="text-sm">{new Date(requester.created_at).toLocaleDateString()}</p>
+                </div>
+              )}
+              <div>
+                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Ticket ID</p>
+                <p className="break-all font-mono text-xs text-foreground/80">{ticket.id}</p>
+              </div>
+            </div>
+          </Card>
+        )}
 
         <Card className="p-6">
           <h2 className="mb-4 font-display text-lg font-bold">{t("conversation")}</h2>

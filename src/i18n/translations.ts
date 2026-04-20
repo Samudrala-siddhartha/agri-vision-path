@@ -121,6 +121,18 @@ export const t: Dict = {
   feat_history_body: { en: "Track every scan, see trends over time.", hi: "हर स्कैन ट्रैक करें, समय के रुझान देखें।", te: "ప్రతి స్కాన్‌ను ట్రాక్ చేయండి, కాలక్రమేణా ధోరణులను చూడండి." },
   feat_grounded_title: { en: "Grounded by data", hi: "डेटा-आधारित", te: "డేటా ఆధారిత" },
   feat_grounded_body: { en: "Reference taxonomy from real crop datasets.", hi: "वास्तविक फसल डेटासेट से संदर्भ।", te: "నిజమైన పంట డేటాసెట్‌ల నుండి సూచన." },
+  // PWA / offline
+  install: { en: "Install", hi: "इंस्टॉल", te: "ఇన్‌స్టాల్" },
+  install_title: { en: "Install AgriPulse", hi: "AgriPulse इंस्टॉल करें", te: "AgriPulse ఇన్‌స్టాల్ చేయండి" },
+  install_subtitle: { en: "Add to home screen — works offline.", hi: "होम स्क्रीन पर जोड़ें — ऑफ़लाइन काम करता है।", te: "హోమ్ స్క్రీన్‌కి జోడించండి — ఆఫ్‌లైన్‌లో పని చేస్తుంది." },
+  install_ios_hint: { en: "On iPhone: tap Share → Add to Home Screen.", hi: "iPhone पर: Share → Add to Home Screen दबाएँ।", te: "iPhoneలో: Share → Add to Home Screen నొక్కండి." },
+  offline_banner: { en: "You're offline — past scans are still available.", hi: "आप ऑफ़लाइन हैं — पिछले स्कैन उपलब्ध हैं।", te: "మీరు ఆఫ్‌లైన్‌లో ఉన్నారు — గత స్కాన్‌లు అందుబాటులో ఉన్నాయి." },
+  // Ticket — requester details
+  requester: { en: "Requester", hi: "अनुरोधकर्ता", te: "అభ్యర్థి" },
+  account_holder: { en: "Account holder", hi: "खाता धारक", te: "ఖాతాదారు" },
+  user_id: { en: "User ID", hi: "उपयोगकर्ता ID", te: "యూజర్ ID" },
+  preferred_lang: { en: "Preferred language", hi: "पसंदीदा भाषा", te: "ప్రాధాన్య భాష" },
+  joined: { en: "Joined", hi: "शामिल हुए", te: "చేరిన తేదీ" },
 };
 
 export function tr(key: keyof typeof t, lang: Lang): string {

@@ -6,6 +6,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/auth/AuthProvider";
 import { RequireAuth } from "@/auth/RequireAuth";
 import { LanguageProvider } from "@/i18n/LanguageProvider";
+import { InstallPrompt } from "@/components/InstallPrompt";
+import { OfflineBanner } from "@/components/OfflineBanner";
+import Legal from "./pages/Legal";
 import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
@@ -28,6 +31,7 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <OfflineBanner />
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/auth" element={<Auth />} />
@@ -39,8 +43,12 @@ const App = () => (
               <Route path="/tickets/new" element={<RequireAuth><NewTicket /></RequireAuth>} />
               <Route path="/tickets/:id" element={<RequireAuth><TicketDetail /></RequireAuth>} />
               <Route path="/admin" element={<RequireAuth><Admin /></RequireAuth>} />
+              <Route path="/about" element={<Legal variant="about" />} />
+              <Route path="/privacy" element={<Legal variant="privacy" />} />
+              <Route path="/terms" element={<Legal variant="terms" />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <InstallPrompt />
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>
