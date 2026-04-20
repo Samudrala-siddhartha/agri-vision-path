@@ -6,7 +6,8 @@
 
 @layer base {
   :root {
-    --background: 60 20% 98%;
+    /* AgriPulse spec — Background #F9FAF7, Primary #2E7D32, Secondary #A5D6A7, Danger #E53935 */
+    --background: 90 18% 97%;
     --foreground: 140 30% 12%;
 
     --card: 0 0% 100%;
@@ -15,28 +16,28 @@
     --popover: 0 0% 100%;
     --popover-foreground: 140 30% 12%;
 
-    /* Earthy leaf green */
-    --primary: 142 55% 32%;
-    --primary-foreground: 60 20% 98%;
-    --primary-glow: 142 60% 45%;
+    /* #2E7D32 */
+    --primary: 123 46% 34%;
+    --primary-foreground: 90 18% 97%;
+    --primary-glow: 123 38% 50%;
 
-    /* Warm soil */
-    --secondary: 35 35% 92%;
-    --secondary-foreground: 25 40% 22%;
+    /* #A5D6A7 */
+    --secondary: 122 39% 75%;
+    --secondary-foreground: 140 35% 18%;
 
-    --muted: 60 15% 94%;
-    --muted-foreground: 140 10% 40%;
+    --muted: 90 14% 93%;
+    --muted-foreground: 140 8% 38%;
 
-    /* Harvest gold accent */
     --accent: 38 90% 55%;
     --accent-foreground: 25 40% 15%;
 
-    --destructive: 0 75% 48%;
-    --destructive-foreground: 60 20% 98%;
+    /* #E53935 */
+    --destructive: 1 77% 55%;
+    --destructive-foreground: 90 18% 97%;
 
-    --success: 142 65% 38%;
+    --success: 123 46% 38%;
     --warning: 38 92% 52%;
-    --danger: 0 78% 50%;
+    --danger: 1 77% 55%;
 
     --border: 60 15% 88%;
     --input: 60 15% 90%;
