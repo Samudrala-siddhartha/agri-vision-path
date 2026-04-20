@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Sprout, Mail, Github, Twitter } from "lucide-react";
+import { Sprout, Mail, Github, Twitter, Download, Globe2 } from "lucide-react";
 import { useLang } from "@/i18n/LanguageProvider";
 
 export function Footer() {
@@ -16,6 +16,10 @@ export function Footer() {
             <span className="font-display text-lg font-bold">{t("app_name")}</span>
           </Link>
           <p className="mt-3 text-sm text-muted-foreground">{t("hero_subtitle")}</p>
+          <div className="mt-4 flex flex-wrap gap-2 text-xs text-muted-foreground">
+            <span className="inline-flex items-center gap-1 rounded-full border bg-background/60 px-2 py-1"><Globe2 className="h-3 w-3" /> EN · हिन्दी · తెలుగు</span>
+            <span className="inline-flex items-center gap-1 rounded-full border bg-background/60 px-2 py-1"><Download className="h-3 w-3" /> Installable · Offline</span>
+          </div>
         </div>
 
         <div>
@@ -23,15 +27,17 @@ export function Footer() {
           <ul className="space-y-2 text-sm">
             <li><Link to="/dashboard" className="story-link text-foreground/80 hover:text-foreground">{t("dashboard")}</Link></li>
             <li><Link to="/scan/new" className="story-link text-foreground/80 hover:text-foreground">{t("new_scan")}</Link></li>
-            <li><Link to="/#features" className="story-link text-foreground/80 hover:text-foreground">{t("features")}</Link></li>
+            <li><a href="/#features" className="story-link text-foreground/80 hover:text-foreground">{t("features")}</a></li>
+            <li><a href="/#crops" className="story-link text-foreground/80 hover:text-foreground">Paddy · Chili · Wheat</a></li>
           </ul>
         </div>
 
         <div>
           <h4 className="mb-3 font-display text-sm font-bold uppercase tracking-wide text-muted-foreground">{t("support")}</h4>
           <ul className="space-y-2 text-sm">
-            <li><Link to="/tickets" className="story-link text-foreground/80 hover:text-foreground">{t("tickets")}</Link></li>
+            <li><Link to="/tickets" className="story-link text-foreground/80 hover:text-foreground">{t("my_tickets")}</Link></li>
             <li><Link to="/tickets/new" className="story-link text-foreground/80 hover:text-foreground">{t("raise_ticket")}</Link></li>
+            <li><Link to="/about" className="story-link text-foreground/80 hover:text-foreground">{t("about")}</Link></li>
             <li>
               <a href="mailto:siddu.dude.dev@gmail.com" className="story-link inline-flex items-center gap-1 text-foreground/80 hover:text-foreground">
                 <Mail className="h-3 w-3" /> {t("contact")}
@@ -45,11 +51,16 @@ export function Footer() {
           <ul className="space-y-2 text-sm">
             <li><Link to="/privacy" className="story-link text-foreground/80 hover:text-foreground">{t("privacy")}</Link></li>
             <li><Link to="/terms" className="story-link text-foreground/80 hover:text-foreground">{t("terms")}</Link></li>
-            <li><Link to="/about" className="story-link text-foreground/80 hover:text-foreground">{t("about")}</Link></li>
+            <li>
+              <a href="https://github.com/siddu-dude-dev" target="_blank" rel="noreferrer" className="story-link inline-flex items-center gap-1 text-foreground/80 hover:text-foreground">
+                <Github className="h-3 w-3" /> Open source
+              </a>
+            </li>
           </ul>
           <div className="mt-4 flex gap-3 text-muted-foreground">
-            <a href="https://github.com" target="_blank" rel="noreferrer" aria-label="GitHub" className="hover-scale"><Github className="h-4 w-4" /></a>
-            <a href="https://twitter.com" target="_blank" rel="noreferrer" aria-label="Twitter" className="hover-scale"><Twitter className="h-4 w-4" /></a>
+            <a href="https://github.com/siddu-dude-dev" target="_blank" rel="noreferrer" aria-label="GitHub" className="hover-scale"><Github className="h-4 w-4" /></a>
+            <a href="https://twitter.com/intent/follow?screen_name=agripulse" target="_blank" rel="noreferrer" aria-label="Twitter" className="hover-scale"><Twitter className="h-4 w-4" /></a>
+            <a href="mailto:siddu.dude.dev@gmail.com" aria-label="Email" className="hover-scale"><Mail className="h-4 w-4" /></a>
           </div>
         </div>
       </div>
@@ -57,7 +68,7 @@ export function Footer() {
       <div className="border-t">
         <div className="container flex flex-col items-center justify-between gap-2 py-4 text-xs text-muted-foreground sm:flex-row">
           <p>© {year} {t("app_name")}. {t("rights")}</p>
-          <p className="font-mono">v1.0 · Built for farmers 🌱</p>
+          <p className="font-mono">v1.0 · Built for farmers 🌱 · siddu.dude.dev@gmail.com</p>
         </div>
       </div>
     </footer>
