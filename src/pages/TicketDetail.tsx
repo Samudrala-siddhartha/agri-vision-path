@@ -18,6 +18,7 @@ const TicketDetail = () => {
   const { user } = useAuth();
   const { t } = useLang();
   const [ticket, setTicket] = useState<any>(null);
+  const [requester, setRequester] = useState<any>(null);
   const [messages, setMessages] = useState<any[]>([]);
   const [body, setBody] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
@@ -28,6 +29,14 @@ const TicketDetail = () => {
     if (!id) return;
     const { data: tk } = await supabase.from("tickets").select("*").eq("id", id).single();
     setTicket(tk);
+    if (tk?.user_id) {
+      const { data: prof } = await supabase
+        .from("profiles")
+        .select("user_id,display_name,preferred_language,created_at,avatar_url")
+        .eq("user_id", tk.user_id)
+        .maybeSingle();
+      setRequester(prof);
+    }
     const { data: ms } = await supabase.from("ticket_messages").select("*").eq("ticket_id", id).order("created_at", { ascending: true });
     setMessages(ms ?? []);
     setTimeout(() => endRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
