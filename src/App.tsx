@@ -31,6 +31,7 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <OfflineBanner />
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/auth" element={<Auth />} />
@@ -42,8 +43,12 @@ const App = () => (
               <Route path="/tickets/new" element={<RequireAuth><NewTicket /></RequireAuth>} />
               <Route path="/tickets/:id" element={<RequireAuth><TicketDetail /></RequireAuth>} />
               <Route path="/admin" element={<RequireAuth><Admin /></RequireAuth>} />
+              <Route path="/about" element={<Legal variant="about" />} />
+              <Route path="/privacy" element={<Legal variant="privacy" />} />
+              <Route path="/terms" element={<Legal variant="terms" />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <InstallPrompt />
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>
