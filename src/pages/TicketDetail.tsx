@@ -111,6 +111,41 @@ const TicketDetail = () => {
           </div>
         </Card>
 
+        {isAdmin && (
+          <Card className="p-5">
+            <h2 className="mb-3 font-display text-base font-bold">{t("requester")}</h2>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <UserIcon className="h-5 w-5" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t("account_holder")}</p>
+                  <p className="truncate font-semibold">{requester?.display_name ?? "—"}</p>
+                </div>
+              </div>
+              <div>
+                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t("preferred_lang")}</p>
+                <p className="font-mono text-sm uppercase">{requester?.preferred_language ?? "—"}</p>
+              </div>
+              <div className="sm:col-span-2">
+                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t("user_id")}</p>
+                <p className="break-all font-mono text-xs text-foreground/80">{ticket.user_id}</p>
+              </div>
+              {requester?.created_at && (
+                <div>
+                  <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t("joined")}</p>
+                  <p className="text-sm">{new Date(requester.created_at).toLocaleDateString()}</p>
+                </div>
+              )}
+              <div>
+                <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Ticket ID</p>
+                <p className="break-all font-mono text-xs text-foreground/80">{ticket.id}</p>
+              </div>
+            </div>
+          </Card>
+        )}
+
         <Card className="p-6">
           <h2 className="mb-4 font-display text-lg font-bold">{t("conversation")}</h2>
           <div className="max-h-[50vh] space-y-3 overflow-y-auto pr-1">
