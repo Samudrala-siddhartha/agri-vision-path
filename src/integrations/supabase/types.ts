@@ -47,6 +47,45 @@ export type Database = {
         }
         Relationships: []
       }
+      crop_samples: {
+        Row: {
+          created_at: string
+          humidity: number
+          id: string
+          k: number
+          label: string
+          n: number
+          p: number
+          ph: number
+          rainfall: number
+          temperature: number
+        }
+        Insert: {
+          created_at?: string
+          humidity: number
+          id?: string
+          k: number
+          label: string
+          n: number
+          p: number
+          ph: number
+          rainfall: number
+          temperature: number
+        }
+        Update: {
+          created_at?: string
+          humidity?: number
+          id?: string
+          k?: number
+          label?: string
+          n?: number
+          p?: number
+          ph?: number
+          rainfall?: number
+          temperature?: number
+        }
+        Relationships: []
+      }
       disease_reference: {
         Row: {
           created_at: string
@@ -461,6 +500,31 @@ export type Database = {
           id: string
           image_url: string
           similarity: number
+        }[]
+      }
+      recommend_crops_knn: {
+        Args: {
+          _humidity: number
+          _k: number
+          _knn?: number
+          _n: number
+          _p: number
+          _ph: number
+          _rainfall: number
+          _temperature: number
+          _top?: number
+        }
+        Returns: {
+          avg_humidity: number
+          avg_k: number
+          avg_n: number
+          avg_p: number
+          avg_ph: number
+          avg_rainfall: number
+          avg_temperature: number
+          label: string
+          suitability: number
+          votes: number
         }[]
       }
     }
