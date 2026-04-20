@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import { Loader2, Send, Upload } from "lucide-react";
+import { Loader2, Send, Upload, Paperclip } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -33,6 +33,21 @@ const NewTicket = () => {
   const [priority, setPriority] = useState<"low" | "normal" | "high">("normal");
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
+  const [lastScan, setLastScan] = useState<{ id: string; crop: string; disease_name: string | null; field?: { name: string; location: string | null } } | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      const { data } = await supabase
+        .from("scans")
+        .select("id, crop, disease_name, field_id, fields:field_id(name, location)")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (data) setLastScan({ id: data.id, crop: data.crop, disease_name: data.disease_name, field: (data as any).fields ?? undefined });
+    })();
+  }, [user]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,9 +68,19 @@ const NewTicket = () => {
         const { data: pub } = supabase.storage.from("ticket-screenshots").getPublicUrl(path);
         screenshot_url = pub.publicUrl;
       }
+      const ctx: string[] = [];
+      if (lastScan) {
+        ctx.push(`\n\n— Auto-attached context —`);
+        ctx.push(`Last scan: ${lastScan.disease_name ?? "pending"} on ${lastScan.crop} (#${lastScan.id})`);
+        if (lastScan.field) ctx.push(`Field: ${lastScan.field.name}${lastScan.field.location ? ` — ${lastScan.field.location}` : ""}`);
+        ctx.push(`Time: ${new Date().toISOString()}`);
+      } else {
+        ctx.push(`\n\n— Auto-attached — Time: ${new Date().toISOString()}`);
+      }
+      const fullDescription = description + ctx.join("\n");
       const { data, error } = await supabase
         .from("tickets")
-        .insert({ user_id: user.id, subject, description, category, priority, screenshot_url })
+        .insert({ user_id: user.id, subject, description: fullDescription, category, priority, screenshot_url, scan_id: lastScan?.id ?? null })
         .select("id").single();
       if (error) throw error;
       toast({ title: t("ticket_created") });

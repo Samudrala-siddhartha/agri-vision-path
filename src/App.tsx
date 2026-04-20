@@ -19,6 +19,8 @@ import Admin from "./pages/Admin";
 import Tickets from "./pages/Tickets";
 import NewTicket from "./pages/NewTicket";
 import TicketDetail from "./pages/TicketDetail";
+import CropPlan from "./pages/CropPlan";
+import SprayCalc from "./pages/SprayCalc";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -42,6 +44,8 @@ const App = () => (
               <Route path="/tickets" element={<RequireAuth><Tickets /></RequireAuth>} />
               <Route path="/tickets/new" element={<RequireAuth><NewTicket /></RequireAuth>} />
               <Route path="/tickets/:id" element={<RequireAuth><TicketDetail /></RequireAuth>} />
+              <Route path="/plan" element={<RequireAuth><CropPlan /></RequireAuth>} />
+              <Route path="/spray" element={<RequireAuth><SprayCalc /></RequireAuth>} />
               <Route path="/admin" element={<RequireAuth><Admin /></RequireAuth>} />
               <Route path="/about" element={<Legal variant="about" />} />
               <Route path="/privacy" element={<Legal variant="privacy" />} />
