@@ -65,26 +65,15 @@ const Auth = () => {
     setMode("signin");
   };
 
-  const PwField = ({ id, value, onChange, minLength }: { id: string; value: string; onChange: (v: string) => void; minLength?: number }) => (
-    <div className="relative">
-      <Input
-        id={id}
-        type={showPw ? "text" : "password"}
-        required
-        minLength={minLength}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="pr-10"
-      />
-      <button
-        type="button"
-        onClick={() => setShowPw((v) => !v)}
-        className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-        aria-label={showPw ? "Hide password" : "Show password"}
-      >
-        {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-      </button>
-    </div>
+  const pwToggle = (
+    <button
+      type="button"
+      onClick={() => setShowPw((v) => !v)}
+      className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+      aria-label={showPw ? "Hide password" : "Show password"}
+    >
+      {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+    </button>
   );
 
   return (
@@ -138,7 +127,10 @@ const Auth = () => {
                         Forgot password?
                       </button>
                     </div>
-                    <PwField id="si-pw" value={password} onChange={setPassword} />
+                    <div className="relative">
+                      <Input id="si-pw" type={showPw ? "text" : "password"} required value={password} onChange={(e) => setPassword(e.target.value)} className="pr-10" />
+                      {pwToggle}
+                    </div>
                   </div>
                   <Button type="submit" disabled={busy} className="w-full">{t("sign_in")}</Button>
                 </form>
@@ -152,7 +144,10 @@ const Auth = () => {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="su-pw">{t("password")}</Label>
-                    <PwField id="su-pw" value={password} onChange={setPassword} minLength={6} />
+                    <div className="relative">
+                      <Input id="su-pw" type={showPw ? "text" : "password"} required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} className="pr-10" />
+                      {pwToggle}
+                    </div>
                   </div>
                   <Button type="submit" disabled={busy} className="w-full">{t("sign_up")}</Button>
                 </form>
