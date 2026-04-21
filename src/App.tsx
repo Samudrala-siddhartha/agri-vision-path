@@ -22,6 +22,7 @@ import TicketDetail from "./pages/TicketDetail";
 import CropPlan from "./pages/CropPlan";
 import SprayCalc from "./pages/SprayCalc";
 import NotFound from "./pages/NotFound.tsx";
+import ResetPassword from "./pages/ResetPassword";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
               <Route path="/scan/new" element={<RequireAuth><NewScan /></RequireAuth>} />
               <Route path="/scan/:id" element={<RequireAuth><ScanResult /></RequireAuth>} />
