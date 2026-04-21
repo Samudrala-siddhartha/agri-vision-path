@@ -11,7 +11,7 @@ import { AppHeader } from "@/components/AppHeader";
 import { Footer } from "@/components/Footer";
 import { BackButton } from "@/components/BackButton";
 import { useLang } from "@/i18n/LanguageProvider";
-import { Sprout } from "lucide-react";
+import { Sprout, Eye, EyeOff } from "lucide-react";
 
 const Auth = () => {
   const nav = useNavigate();
@@ -19,6 +19,9 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
+  const [showPw, setShowPw] = useState(false);
+  const [mode, setMode] = useState<"signin" | "forgot">("signin");
+  const [resetEmail, setResetEmail] = useState("");
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,6 +53,40 @@ const Auth = () => {
     if (error) toast({ title: error.message, variant: "destructive" });
   };
 
+  const handleForgot = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setBusy(false);
+    if (error) return toast({ title: error.message, variant: "destructive" });
+    toast({ title: "Check your email for the reset link" });
+    setMode("signin");
+  };
+
+  const PwField = ({ id, value, onChange, minLength }: { id: string; value: string; onChange: (v: string) => void; minLength?: number }) => (
+    <div className="relative">
+      <Input
+        id={id}
+        type={showPw ? "text" : "password"}
+        required
+        minLength={minLength}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="pr-10"
+      />
+      <button
+        type="button"
+        onClick={() => setShowPw((v) => !v)}
+        className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+        aria-label={showPw ? "Hide password" : "Show password"}
+      >
+        {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+      </button>
+    </div>
+  );
+
   return (
     <div className="flex min-h-screen flex-col bg-soil">
       <AppHeader />
@@ -65,40 +102,63 @@ const Auth = () => {
             <p className="text-sm text-muted-foreground">{t("app_tagline")}</p>
           </div>
 
-          <Tabs defaultValue="signin">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="signin">{t("sign_in")}</TabsTrigger>
-              <TabsTrigger value="signup">{t("sign_up")}</TabsTrigger>
-            </TabsList>
+          {mode === "forgot" ? (
+            <form onSubmit={handleForgot} className="space-y-4 pt-2">
+              <div className="space-y-2">
+                <Label htmlFor="fp-email">{t("email")}</Label>
+                <Input id="fp-email" type="email" required value={resetEmail} onChange={(e) => setResetEmail(e.target.value)} />
+                <p className="text-xs text-muted-foreground">We'll email you a secure link to reset your password.</p>
+              </div>
+              <Button type="submit" disabled={busy} className="w-full">Send reset link</Button>
+              <Button type="button" variant="ghost" className="w-full" onClick={() => setMode("signin")}>
+                Back to sign in
+              </Button>
+            </form>
+          ) : (
+            <Tabs defaultValue="signin">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="signin">{t("sign_in")}</TabsTrigger>
+                <TabsTrigger value="signup">{t("sign_up")}</TabsTrigger>
+              </TabsList>
 
-            <TabsContent value="signin">
-              <form onSubmit={handleSignIn} className="space-y-4 pt-4">
-                <div className="space-y-2">
-                  <Label htmlFor="si-email">{t("email")}</Label>
-                  <Input id="si-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="si-pw">{t("password")}</Label>
-                  <Input id="si-pw" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
-                </div>
-                <Button type="submit" disabled={busy} className="w-full">{t("sign_in")}</Button>
-              </form>
-            </TabsContent>
+              <TabsContent value="signin">
+                <form onSubmit={handleSignIn} className="space-y-4 pt-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="si-email">{t("email")}</Label>
+                    <Input id="si-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="si-pw">{t("password")}</Label>
+                      <button
+                        type="button"
+                        onClick={() => { setResetEmail(email); setMode("forgot"); }}
+                        className="text-xs font-medium text-primary hover:underline"
+                      >
+                        Forgot password?
+                      </button>
+                    </div>
+                    <PwField id="si-pw" value={password} onChange={setPassword} />
+                  </div>
+                  <Button type="submit" disabled={busy} className="w-full">{t("sign_in")}</Button>
+                </form>
+              </TabsContent>
 
-            <TabsContent value="signup">
-              <form onSubmit={handleSignUp} className="space-y-4 pt-4">
-                <div className="space-y-2">
-                  <Label htmlFor="su-email">{t("email")}</Label>
-                  <Input id="su-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="su-pw">{t("password")}</Label>
-                  <Input id="su-pw" type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} />
-                </div>
-                <Button type="submit" disabled={busy} className="w-full">{t("sign_up")}</Button>
-              </form>
-            </TabsContent>
-          </Tabs>
+              <TabsContent value="signup">
+                <form onSubmit={handleSignUp} className="space-y-4 pt-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="su-email">{t("email")}</Label>
+                    <Input id="su-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="su-pw">{t("password")}</Label>
+                    <PwField id="su-pw" value={password} onChange={setPassword} minLength={6} />
+                  </div>
+                  <Button type="submit" disabled={busy} className="w-full">{t("sign_up")}</Button>
+                </form>
+              </TabsContent>
+            </Tabs>
+          )}
 
           <div className="my-5 flex items-center gap-3 text-xs text-muted-foreground">
             <span className="h-px flex-1 bg-border" /> OR <span className="h-px flex-1 bg-border" />
