@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      ads: {
+        Row: {
+          active: boolean
+          created_at: string
+          cta_label: string | null
+          description: string | null
+          expires_at: string | null
+          id: string
+          image_url: string | null
+          internal_link: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          cta_label?: string | null
+          description?: string | null
+          expires_at?: string | null
+          id?: string
+          image_url?: string | null
+          internal_link: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          cta_label?: string | null
+          description?: string | null
+          expires_at?: string | null
+          id?: string
+          image_url?: string | null
+          internal_link?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       audit_log: {
         Row: {
           action: string
