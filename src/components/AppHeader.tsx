@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
+import type { LucideIcon } from "lucide-react";
 import {
   Bell, Camera, HelpCircle, Home, Languages, LayoutDashboard, LifeBuoy, LogOut, Megaphone,
   Menu, Moon, RotateCcw, ShieldCheck, Sprout, Sun, User, Wheat,
@@ -196,7 +197,7 @@ function MenuSection({ title, children }: { title: string; children: ReactNode }
   );
 }
 
-function DrawerItem({ icon: Icon, label, to, onGo, active }: { icon: any; label: string; to: string; onGo: (to: string) => void; active?: boolean }) {
+function DrawerItem({ icon: Icon, label, to, onGo, active }: { icon: LucideIcon; label: string; to: string; onGo: (to: string) => void; active?: boolean }) {
   return (
     <SheetClose asChild>
       <button onClick={() => onGo(to)} className={`menu-row ${active ? "bg-primary/10 text-primary" : "hover:bg-muted"}`}>
