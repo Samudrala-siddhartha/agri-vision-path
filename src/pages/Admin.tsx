@@ -11,8 +11,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
-import { Loader2, Database, Users, FileText, Image as ImageIcon, ShieldAlert, Sparkles, LifeBuoy, Ban, PauseCircle, CheckCircle2 } from "lucide-react";
+import { Loader2, Database, Users, FileText, Image as ImageIcon, ShieldAlert, Sparkles, LifeBuoy, Ban, PauseCircle, CheckCircle2, Megaphone } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Admin = () => {
@@ -60,12 +61,13 @@ const Admin = () => {
           </div>
 
           <Tabs defaultValue="overview">
-            <TabsList className="grid w-full grid-cols-7">
+            <TabsList className="grid w-full grid-cols-4 md:grid-cols-8">
               <TabsTrigger value="overview" className="gap-2"><Sparkles className="h-4 w-4" />Overview</TabsTrigger>
               <TabsTrigger value="rag" className="gap-2"><Database className="h-4 w-4" />RAG</TabsTrigger>
               <TabsTrigger value="refs" className="gap-2"><ImageIcon className="h-4 w-4" />References</TabsTrigger>
               <TabsTrigger value="scans" className="gap-2"><FileText className="h-4 w-4" />Scans</TabsTrigger>
               <TabsTrigger value="tickets" className="gap-2"><LifeBuoy className="h-4 w-4" />Tickets</TabsTrigger>
+              <TabsTrigger value="announcements" className="gap-2"><Megaphone className="h-4 w-4" />Popups</TabsTrigger>
               <TabsTrigger value="users" className="gap-2"><Users className="h-4 w-4" />Users</TabsTrigger>
               <TabsTrigger value="audit" className="gap-2"><ShieldAlert className="h-4 w-4" />Audit</TabsTrigger>
             </TabsList>
@@ -75,6 +77,7 @@ const Admin = () => {
             <TabsContent value="refs" className="pt-4"><RefsTab /></TabsContent>
             <TabsContent value="scans" className="pt-4"><ScansTab /></TabsContent>
             <TabsContent value="tickets" className="pt-4"><TicketsTab /></TabsContent>
+            <TabsContent value="announcements" className="pt-4"><AnnouncementsTab /></TabsContent>
             <TabsContent value="users" className="pt-4"><UsersTab /></TabsContent>
             <TabsContent value="audit" className="pt-4"><AuditTab /></TabsContent>
           </Tabs>
