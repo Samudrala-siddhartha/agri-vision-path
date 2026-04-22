@@ -114,7 +114,7 @@ export function AppHeader() {
                     <DrawerItem icon={User} label={t("account_info")} to="/dashboard" onGo={closeGo} />
                     <DrawerItem icon={RotateCcw} label={t("reset_password")} to="/reset-password" onGo={closeGo} />
                     <SheetClose asChild>
-                      <a href="https://wa.me/" target="_blank" rel="noreferrer" className="menu-row hover:bg-muted">
+                      <a href="https://chat.whatsapp.com/CtKA7DPgIhm6vfroyNil9l?mode=gi_t" target="_blank" rel="noreferrer" className="menu-row hover:bg-muted">
                         <LifeBuoy className="h-5 w-5" /> <span>{t("whatsapp_community")}</span>
                       </a>
                     </SheetClose>
