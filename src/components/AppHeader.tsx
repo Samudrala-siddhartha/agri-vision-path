@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
+import type { LucideIcon } from "lucide-react";
 import {
   Bell, Camera, HelpCircle, Home, Languages, LayoutDashboard, LifeBuoy, LogOut, Megaphone,
   Menu, Moon, RotateCcw, ShieldCheck, Sprout, Sun, User, Wheat,
@@ -114,7 +115,7 @@ export function AppHeader() {
                     <DrawerItem icon={User} label={t("account_info")} to="/dashboard" onGo={closeGo} />
                     <DrawerItem icon={RotateCcw} label={t("reset_password")} to="/reset-password" onGo={closeGo} />
                     <SheetClose asChild>
-                      <a href="https://wa.me/" target="_blank" rel="noreferrer" className="menu-row hover:bg-muted">
+                      <a href="https://chat.whatsapp.com/CtKA7DPgIhm6vfroyNil9l?mode=gi_t" target="_blank" rel="noreferrer" className="menu-row hover:bg-muted">
                         <LifeBuoy className="h-5 w-5" /> <span>{t("whatsapp_community")}</span>
                       </a>
                     </SheetClose>
@@ -196,7 +197,7 @@ function MenuSection({ title, children }: { title: string; children: ReactNode }
   );
 }
 
-function DrawerItem({ icon: Icon, label, to, onGo, active }: { icon: any; label: string; to: string; onGo: (to: string) => void; active?: boolean }) {
+function DrawerItem({ icon: Icon, label, to, onGo, active }: { icon: LucideIcon; label: string; to: string; onGo: (to: string) => void; active?: boolean }) {
   return (
     <SheetClose asChild>
       <button onClick={() => onGo(to)} className={`menu-row ${active ? "bg-primary/10 text-primary" : "hover:bg-muted"}`}>
