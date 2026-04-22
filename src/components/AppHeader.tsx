@@ -1,5 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import type { ReactNode } from "react";
 import {
   Bell, Camera, HelpCircle, Home, Languages, LayoutDashboard, LifeBuoy, LogOut, Megaphone,
   Menu, Moon, RotateCcw, ShieldCheck, Sprout, Sun, User, Wheat,
@@ -112,9 +113,11 @@ export function AppHeader() {
                   <MenuSection title="Account">
                     <DrawerItem icon={User} label={t("account_info")} to="/dashboard" onGo={closeGo} />
                     <DrawerItem icon={RotateCcw} label={t("reset_password")} to="/reset-password" onGo={closeGo} />
-                    <a href="https://wa.me/" target="_blank" rel="noreferrer" className="menu-row hover:bg-muted">
-                      <LifeBuoy className="h-5 w-5" /> <span>{t("whatsapp_community")}</span>
-                    </a>
+                    <SheetClose asChild>
+                      <a href="https://wa.me/" target="_blank" rel="noreferrer" className="menu-row hover:bg-muted">
+                        <LifeBuoy className="h-5 w-5" /> <span>{t("whatsapp_community")}</span>
+                      </a>
+                    </SheetClose>
                   </MenuSection>
 
                   <MenuSection title="Support">
@@ -184,7 +187,7 @@ export function AppHeader() {
   );
 }
 
-function MenuSection({ title, children }: { title: string; children: React.ReactNode }) {
+function MenuSection({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="space-y-2">
       <p className="px-2 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">{title}</p>
