@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   Bell, Camera, HelpCircle, Home, Languages, LayoutDashboard, LifeBuoy, LogOut, Megaphone,
-  Menu, Moon, RotateCcwKey, ShieldCheck, Sprout, Sun, User, Wheat,
+  Menu, Moon, RotateCcw, ShieldCheck, Sprout, Sun, User, Wheat,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -111,7 +111,7 @@ export function AppHeader() {
 
                   <MenuSection title="Account">
                     <DrawerItem icon={User} label={t("account_info")} to="/dashboard" onGo={closeGo} />
-                    <DrawerItem icon={RotateCcwKey} label={t("reset_password")} to="/reset-password" onGo={closeGo} />
+                    <DrawerItem icon={RotateCcw} label={t("reset_password")} to="/reset-password" onGo={closeGo} />
                     <a href="https://wa.me/" target="_blank" rel="noreferrer" className="menu-row hover:bg-muted">
                       <LifeBuoy className="h-5 w-5" /> <span>{t("whatsapp_community")}</span>
                     </a>
