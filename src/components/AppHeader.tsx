@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
   Bell, Camera, HelpCircle, Home, Languages, LayoutDashboard, LifeBuoy, LogOut, Megaphone,
-  Menu, Moon, RotateCcw, ShieldCheck, Sprout, Sun, User, Wheat,
+  Menu, MessageCircle, Moon, RotateCcw, ShieldCheck, Sprout, Sun, User, Wheat,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -115,8 +115,8 @@ export function AppHeader() {
                     <DrawerItem icon={User} label={t("account_info")} to="/dashboard" onGo={closeGo} />
                     <DrawerItem icon={RotateCcw} label={t("reset_password")} to="/reset-password" onGo={closeGo} />
                     <SheetClose asChild>
-                      <a href="https://chat.whatsapp.com/CtKA7DPgIhm6vfroyNil9l?mode=gi_t" target="_blank" rel="noreferrer" className="menu-row hover:bg-muted">
-                        <LifeBuoy className="h-5 w-5" /> <span>{t("whatsapp_community")}</span>
+                      <a href="https://chat.whatsapp.com/CtKA7DPgIhm6vfroyNil9l?mode=gi_t" target="_blank" rel="noreferrer" className="menu-row bg-primary text-primary-foreground shadow-soft hover:bg-primary/90">
+                        <MessageCircle className="h-5 w-5" /> <span>{t("whatsapp_community")}</span>
                       </a>
                     </SheetClose>
                   </MenuSection>
