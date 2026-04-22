@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
   Bell, Camera, HelpCircle, Home, Languages, LayoutDashboard, LifeBuoy, LogOut, Megaphone,
-  Menu, MessageCircle, Moon, RotateCcw, ShieldCheck, Sprout, Sun, User, Wheat,
+  Menu, MessageCircle, Moon, RotateCcw, ShieldCheck, Sun, User, Wheat,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +18,7 @@ import { useLang } from "@/i18n/LanguageProvider";
 import { useAuth } from "@/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
 import accountHero from "@/assets/account-hero.jpg";
+import appLogo from "@/assets/app-logo.png";
 
 export function AppHeader() {
   const { t } = useLang();
@@ -140,10 +141,8 @@ export function AppHeader() {
             </Sheet>
           )}
           <Link to={user ? "/dashboard" : "/"} className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-hero shadow-soft">
-            <Sprout className="h-5 w-5 text-primary-foreground" />
-          </div>
-          <span className="font-display text-lg font-bold">{t("app_name")}</span>
+            <img src={appLogo} alt="AgriPulse logo" className="h-10 w-10 rounded-2xl object-cover shadow-soft" />
+            <span className="font-display text-lg font-bold">{t("app_name")}</span>
           </Link>
         </div>
         <div className="flex items-center gap-2">
