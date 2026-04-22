@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
-import { Sprout, Mail, Github, Twitter, Download, Globe2, MapPin, Phone } from "lucide-react";
+import { Mail, Github, Twitter, Download, Globe2, MapPin, Phone } from "lucide-react";
 import { useLang } from "@/i18n/LanguageProvider";
+import appLogo from "@/assets/app-logo.png";
 
 export function Footer() {
   const { t } = useLang();
@@ -10,9 +11,7 @@ export function Footer() {
       <div className="container grid gap-8 py-12 md:grid-cols-4">
         <div>
           <Link to="/" className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-hero shadow-soft">
-              <Sprout className="h-5 w-5 text-primary-foreground" />
-            </div>
+            <img src={appLogo} alt="AgriPulse logo" className="h-10 w-10 rounded-2xl object-cover shadow-soft" />
             <span className="font-display text-lg font-bold">{t("app_name")}</span>
           </Link>
           <p className="mt-3 text-sm text-muted-foreground">{t("hero_subtitle")}</p>
