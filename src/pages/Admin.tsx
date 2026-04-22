@@ -282,6 +282,89 @@ function TicketsTab() {
   );
 }
 
+function AnnouncementsTab() {
+  const [rows, setRows] = useState<any[]>([]);
+  const [title, setTitle] = useState("");
+  const [message, setMessage] = useState("");
+  const [active, setActive] = useState(true);
+  const [showAsPopup, setShowAsPopup] = useState(true);
+  const [busy, setBusy] = useState(false);
+
+  const loadAnnouncements = async () => {
+    const { data } = await (supabase as any)
+      .from("announcements")
+      .select("id,title,message,audience,show_as_popup,active,expires_at,created_at")
+      .order("created_at", { ascending: false })
+      .limit(50);
+    setRows(data ?? []);
+  };
+
+  useEffect(() => {
+    loadAnnouncements();
+  }, []);
+
+  const createAnnouncement = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim() || !message.trim()) return;
+    setBusy(true);
+    const { error } = await (supabase as any).from("announcements").insert({
+      title: title.trim(),
+      message: message.trim(),
+      audience: "all",
+      active,
+      show_as_popup: showAsPopup,
+    });
+    setBusy(false);
+    if (error) return toast({ title: "Announcement failed", description: error.message, variant: "destructive" });
+    toast({ title: "Announcement published", description: showAsPopup ? "Users will see it as a popup." : "Saved as an announcement." });
+    setTitle("");
+    setMessage("");
+    setActive(true);
+    setShowAsPopup(true);
+    loadAnnouncements();
+  };
+
+  const toggleActive = async (id: string, next: boolean) => {
+    const { error } = await (supabase as any).from("announcements").update({ active: next }).eq("id", id);
+    if (error) return toast({ title: "Update failed", description: error.message, variant: "destructive" });
+    loadAnnouncements();
+  };
+
+  return (
+    <div className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
+      <Card className="p-5">
+        <h3 className="mb-3 font-display text-lg font-bold">Create popup announcement</h3>
+        <form onSubmit={createAnnouncement} className="space-y-3">
+          <div><Label>Title</Label><Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Important crop alert" /></div>
+          <div><Label>Message</Label><Textarea rows={6} value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Write the announcement users should see..." /></div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="menu-row justify-between border"><span>Show as popup</span><Switch checked={showAsPopup} onCheckedChange={setShowAsPopup} /></label>
+            <label className="menu-row justify-between border"><span>Active now</span><Switch checked={active} onCheckedChange={setActive} /></label>
+          </div>
+          <Button type="submit" disabled={busy || !title.trim() || !message.trim()} className="w-full">
+            {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : "Publish announcement"}
+          </Button>
+        </form>
+      </Card>
+
+      <Card className="overflow-hidden">
+        <div className="grid grid-cols-12 gap-2 border-b bg-muted/40 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          <span className="col-span-5">Announcement</span><span className="col-span-2">Type</span><span className="col-span-2">Status</span><span className="col-span-3">Control</span>
+        </div>
+        {rows.map((r) => (
+          <div key={r.id} className="grid grid-cols-12 items-center gap-2 border-b px-4 py-3 text-sm">
+            <span className="col-span-5 min-w-0"><p className="truncate font-medium">{r.title}</p><p className="truncate text-xs text-muted-foreground">{r.message}</p></span>
+            <span className="col-span-2"><Badge variant="outline">{r.show_as_popup ? "Popup" : "Notice"}</Badge></span>
+            <span className="col-span-2"><Badge variant={r.active ? "secondary" : "outline"}>{r.active ? "Active" : "Hidden"}</Badge></span>
+            <span className="col-span-3"><Switch checked={r.active} onCheckedChange={(next) => toggleActive(r.id, next)} aria-label="Toggle announcement" /></span>
+          </div>
+        ))}
+        {!rows.length && <p className="p-4 text-sm text-muted-foreground">No announcements yet.</p>}
+      </Card>
+    </div>
+  );
+}
+
 function UsersTab() {
   const [rows, setRows] = useState<any[]>([]);
   const [busyUser, setBusyUser] = useState<string | null>(null);
