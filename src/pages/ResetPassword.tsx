@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
 import { AppHeader } from "@/components/AppHeader";
 import { Footer } from "@/components/Footer";
+import { BackButton } from "@/components/BackButton";
 import { Sprout, Eye, EyeOff } from "lucide-react";
 
 const ResetPassword = () => {
@@ -45,7 +46,9 @@ const ResetPassword = () => {
     <div className="flex min-h-screen flex-col bg-soil">
       <AppHeader />
       <main className="container flex flex-1 items-center justify-center py-12">
-        <Card className="w-full max-w-md p-8 shadow-elevated">
+        <div className="w-full max-w-md space-y-3">
+        <BackButton />
+        <Card className="w-full p-8 shadow-elevated">
           <div className="mb-6 flex flex-col items-center text-center">
             <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-hero shadow-soft">
               <Sprout className="h-6 w-6 text-primary-foreground" />
@@ -77,6 +80,7 @@ const ResetPassword = () => {
             </form>
           )}
         </Card>
+        </div>
       </main>
       <Footer />
     </div>
