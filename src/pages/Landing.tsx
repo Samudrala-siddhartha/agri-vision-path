@@ -7,6 +7,7 @@ import { AppHeader } from "@/components/AppHeader";
 import { Footer } from "@/components/Footer";
 import { TiltCard } from "@/components/TiltCard";
 import { LANGS } from "@/i18n/translations";
+import landingHero from "@/assets/landing-hero.jpg";
 
 const Landing = () => {
   const { t, lang, setLang } = useLang();
@@ -15,45 +16,35 @@ const Landing = () => {
       <AppHeader />
       <main className="flex-1">
         {/* Hero */}
-        <section className="container relative overflow-hidden py-16 md:py-24">
-          {/* Decorative blobs */}
-          <motion.div
-            aria-hidden
-            className="pointer-events-none absolute -top-20 -left-20 h-80 w-80 rounded-full bg-primary/20 blur-3xl"
-            animate={{ x: [0, 20, 0], y: [0, 10, 0] }}
-            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            aria-hidden
-            className="pointer-events-none absolute -bottom-20 -right-20 h-96 w-96 rounded-full bg-accent/20 blur-3xl"
-            animate={{ x: [0, -20, 0], y: [0, -15, 0] }}
-            transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <div className="relative grid gap-10 md:grid-cols-2 md:items-center">
+        <section className="relative min-h-[calc(100vh-4rem)] overflow-hidden">
+          <img src={landingHero} alt="Smart crop monitoring in a green field" className="absolute inset-0 h-full w-full object-cover" />
+          <div className="absolute inset-0 bg-foreground/65" />
+          <div className="container relative grid min-h-[calc(100vh-4rem)] gap-10 py-16 md:grid-cols-[1.05fr_0.95fr] md:items-center md:py-20">
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               className="space-y-6"
             >
-              <div className="inline-flex items-center gap-2 rounded-full border bg-card/60 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur">
-                <Sprout className="h-3.5 w-3.5 text-primary" />
+              <div className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/25 bg-background/15 px-3 py-1 text-xs font-medium text-primary-foreground backdrop-blur">
+                <Sprout className="h-3.5 w-3.5 text-primary-foreground" />
                 AI Crop Doctor · Paddy · Chili · Wheat
               </div>
-              <h1 className="font-display text-4xl font-extrabold leading-tight text-foreground md:text-6xl">
-                {t("app_tagline")}
+              <h1 className="font-display text-5xl font-extrabold leading-tight text-primary-foreground md:text-7xl">
+                {t("app_name")}
               </h1>
-              <p className="max-w-xl text-lg text-muted-foreground">{t("hero_subtitle")}</p>
+              <p className="max-w-xl font-display text-2xl font-bold leading-snug text-primary-foreground md:text-4xl">{t("app_tagline")}</p>
+              <p className="max-w-xl text-lg text-primary-foreground/85">{t("hero_subtitle")}</p>
               <div className="flex flex-wrap items-center gap-3">
                 <Button asChild size="lg" className="rounded-full px-7 hover-scale">
                   <Link to="/auth" className="gap-2">{t("get_started")} <ArrowRight className="h-4 w-4" /></Link>
                 </Button>
-                <div className="flex items-center gap-1 rounded-full border bg-card/60 p-1 backdrop-blur">
+                <div className="flex items-center gap-1 rounded-full border border-primary-foreground/25 bg-background/15 p-1 backdrop-blur">
                   {LANGS.map((l) => (
                     <button
                       key={l.code}
                       onClick={() => setLang(l.code)}
-                      className={`rounded-full px-3 py-1.5 text-sm font-medium transition ${lang === l.code ? "bg-primary text-primary-foreground shadow-soft" : "text-muted-foreground hover:text-foreground"}`}
+                      className={`rounded-full px-3 py-1.5 text-sm font-medium transition ${lang === l.code ? "bg-primary text-primary-foreground shadow-soft" : "text-primary-foreground/80 hover:text-primary-foreground"}`}
                     >
                       {l.native}
                     </button>
