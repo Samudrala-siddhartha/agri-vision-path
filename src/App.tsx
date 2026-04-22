@@ -8,6 +8,7 @@ import { RequireAuth } from "@/auth/RequireAuth";
 import { LanguageProvider } from "@/i18n/LanguageProvider";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { OfflineBanner } from "@/components/OfflineBanner";
+import { AnnouncementPopup } from "@/components/AnnouncementPopup";
 import Legal from "./pages/Legal";
 import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
@@ -54,6 +55,7 @@ const App = () => (
               <Route path="/terms" element={<Legal variant="terms" />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <AnnouncementPopup />
             <InstallPrompt />
           </BrowserRouter>
         </TooltipProvider>

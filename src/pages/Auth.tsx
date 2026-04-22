@@ -11,7 +11,8 @@ import { AppHeader } from "@/components/AppHeader";
 import { Footer } from "@/components/Footer";
 import { BackButton } from "@/components/BackButton";
 import { useLang } from "@/i18n/LanguageProvider";
-import { Sprout, Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
+import appLogo from "@/assets/app-logo.png";
 
 const Auth = () => {
   const nav = useNavigate();
@@ -84,9 +85,7 @@ const Auth = () => {
           <BackButton to="/" />
           <Card className="w-full p-8 shadow-elevated">
             <div className="mb-6 flex flex-col items-center text-center">
-            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-hero shadow-soft">
-              <Sprout className="h-6 w-6 text-primary-foreground" />
-            </div>
+            <img src={appLogo} alt="AgriPulse logo" className="mb-3 h-14 w-14 rounded-2xl object-cover shadow-soft" />
             <h1 className="font-display text-2xl font-bold">{t("app_name")}</h1>
             <p className="text-sm text-muted-foreground">{t("app_tagline")}</p>
           </div>
