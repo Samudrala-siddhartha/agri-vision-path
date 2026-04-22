@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/auth/AuthProvider";
@@ -303,7 +303,7 @@ function AnnouncementsTab() {
     loadAnnouncements();
   }, []);
 
-  const createAnnouncement = async (e: React.FormEvent) => {
+  const createAnnouncement = async (e: FormEvent) => {
     e.preventDefault();
     if (!title.trim() || !message.trim()) return;
     setBusy(true);
