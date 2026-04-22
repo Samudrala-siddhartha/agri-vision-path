@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { Loader2, Database, Users, FileText, Image as ImageIcon, ShieldAlert, Sparkles, LifeBuoy } from "lucide-react";
+import { Loader2, Database, Users, FileText, Image as ImageIcon, ShieldAlert, Sparkles, LifeBuoy, Ban, PauseCircle, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Admin = () => {
@@ -281,25 +281,61 @@ function TicketsTab() {
 
 function UsersTab() {
   const [rows, setRows] = useState<any[]>([]);
+  const [busyUser, setBusyUser] = useState<string | null>(null);
+  const loadUsers = async () => {
+    const { data: profiles } = await supabase
+      .from("profiles")
+      .select("user_id,display_name,preferred_language,created_at,account_status,moderation_reason,moderated_at")
+      .order("created_at", { ascending: false })
+      .limit(100);
+    const { data: roles } = await supabase.from("user_roles").select("user_id,role");
+    const map = new Map<string, string[]>();
+    (roles ?? []).forEach((r) => map.set(r.user_id, [...(map.get(r.user_id) ?? []), r.role]));
+    setRows((profiles ?? []).map((p) => ({ ...p, roles: map.get(p.user_id) ?? [] })));
+  };
+
   useEffect(() => {
-    (async () => {
-      const { data: profiles } = await supabase.from("profiles").select("user_id,display_name,preferred_language,created_at").order("created_at", { ascending: false }).limit(100);
-      const { data: roles } = await supabase.from("user_roles").select("user_id,role");
-      const map = new Map<string, string[]>();
-      (roles ?? []).forEach((r) => map.set(r.user_id, [...(map.get(r.user_id) ?? []), r.role]));
-      setRows((profiles ?? []).map((p) => ({ ...p, roles: map.get(p.user_id) ?? [] })));
-    })();
+    loadUsers();
   }, []);
+
+  const setStatus = async (userId: string, account_status: "active" | "suspended" | "banned") => {
+    const reason = account_status === "active" ? null : window.prompt(`Reason for ${account_status}?`, account_status === "banned" ? "Policy violation" : "Temporary account review");
+    if (account_status !== "active" && !reason) return;
+    setBusyUser(userId);
+    const { error } = await (supabase.from("profiles") as any)
+      .update({ account_status, moderation_reason: reason, moderated_at: account_status === "active" ? null : new Date().toISOString() })
+      .eq("user_id", userId);
+    setBusyUser(null);
+    if (error) {
+      toast({ title: "Moderation failed", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast({ title: "Account updated", description: `User is now ${account_status}.` });
+    loadUsers();
+  };
+
   return (
     <Card className="overflow-hidden">
-      <div className="grid grid-cols-4 gap-2 border-b bg-muted/40 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-        <span className="col-span-2">User</span><span>Lang</span><span>Roles</span>
+      <div className="grid grid-cols-12 gap-2 border-b bg-muted/40 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        <span className="col-span-3">User</span><span>Lang</span><span className="col-span-2">Roles</span><span className="col-span-2">Status</span><span className="col-span-4">Controls</span>
       </div>
       {rows.map((r) => (
-        <div key={r.user_id} className="grid grid-cols-4 gap-2 border-b px-4 py-2 text-sm">
-          <span className="col-span-2 truncate">{r.display_name ?? r.user_id.slice(0, 8)}</span>
+        <div key={r.user_id} className="grid grid-cols-12 items-center gap-2 border-b px-4 py-3 text-sm">
+          <span className="col-span-3 min-w-0">
+            <p className="truncate font-medium">{r.display_name ?? r.user_id.slice(0, 8)}</p>
+            <p className="truncate font-mono text-[10px] text-muted-foreground">{r.user_id}</p>
+          </span>
           <span>{r.preferred_language}</span>
-          <span className="flex flex-wrap gap-1">{r.roles.map((x: string) => <Badge key={x} variant={x === "admin" ? "default" : "secondary"}>{x}</Badge>)}</span>
+          <span className="col-span-2 flex flex-wrap gap-1">{r.roles.map((x: string) => <Badge key={x} variant={x === "admin" ? "default" : "secondary"}>{x}</Badge>)}</span>
+          <span className="col-span-2">
+            <Badge variant={r.account_status === "active" ? "secondary" : "destructive"}>{r.account_status ?? "active"}</Badge>
+            {r.moderation_reason && <p className="mt-1 truncate text-[10px] text-muted-foreground">{r.moderation_reason}</p>}
+          </span>
+          <span className="col-span-4 flex flex-wrap gap-2">
+            <Button size="sm" variant="outline" className="h-8 gap-1" disabled={busyUser === r.user_id || r.account_status === "active"} onClick={() => setStatus(r.user_id, "active")}><CheckCircle2 className="h-3.5 w-3.5" />Active</Button>
+            <Button size="sm" variant="secondary" className="h-8 gap-1" disabled={busyUser === r.user_id || r.account_status === "suspended"} onClick={() => setStatus(r.user_id, "suspended")}><PauseCircle className="h-3.5 w-3.5" />Suspend</Button>
+            <Button size="sm" variant="destructive" className="h-8 gap-1" disabled={busyUser === r.user_id || r.account_status === "banned"} onClick={() => setStatus(r.user_id, "banned")}><Ban className="h-3.5 w-3.5" />Ban</Button>
+          </span>
         </div>
       ))}
     </Card>
