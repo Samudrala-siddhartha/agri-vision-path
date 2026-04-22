@@ -232,28 +232,37 @@ export type Database = {
       }
       profiles: {
         Row: {
+          account_status: string
           avatar_url: string | null
           created_at: string
           display_name: string | null
           id: string
+          moderated_at: string | null
+          moderation_reason: string | null
           preferred_language: string
           updated_at: string
           user_id: string
         }
         Insert: {
+          account_status?: string
           avatar_url?: string | null
           created_at?: string
           display_name?: string | null
           id?: string
+          moderated_at?: string | null
+          moderation_reason?: string | null
           preferred_language?: string
           updated_at?: string
           user_id: string
         }
         Update: {
+          account_status?: string
           avatar_url?: string | null
           created_at?: string
           display_name?: string | null
           id?: string
+          moderated_at?: string | null
+          moderation_reason?: string | null
           preferred_language?: string
           updated_at?: string
           user_id?: string
@@ -511,6 +520,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_account_active: { Args: { _user_id: string }; Returns: boolean }
       match_rag_documents: {
         Args: {
           match_count?: number
