@@ -137,6 +137,8 @@ export const t: Dict = {
   quick_actions: { en: "Quick actions", hi: "त्वरित कार्य", te: "త్వరిత చర్యలు" },
   scan_crop: { en: "Scan crop", hi: "फसल स्कैन", te: "పంట స్కాన్" },
   plan_crop: { en: "Plan crop", hi: "फसल योजना", te: "పంట ప్రణాళిక" },
+  mixed_crop_planning: { en: "Mixed Crop Planning", hi: "मिश्रित फसल योजना", te: "మిశ్రమ పంట ప్రణాళిక" },
+  farming_methods: { en: "Farming Methods", hi: "खेती के तरीके", te: "వ్యవసాయ పద్ధతులు" },
   my_farm: { en: "My farm", hi: "मेरा खेत", te: "నా పొలం" },
   spray_calc: { en: "Spray calc", hi: "स्प्रे गणना", te: "స్ప్రే లెక్క" },
   alerts: { en: "Alerts", hi: "सूचनाएं", te: "హెచ్చరికలు" },
