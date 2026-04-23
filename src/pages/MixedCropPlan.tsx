@@ -12,6 +12,7 @@ import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/i18n/LanguageProvider";
+import { useLocalizedStrings } from "@/hooks/useLocalizedStrings";
 
 type Rule = {
   id: string;
@@ -32,7 +33,7 @@ const soils = ["loamy", "sandy loam", "clay", "alluvial", "black soil", "red soi
 const weathers = ["any", "warm", "cool", "humid"];
 
 export default function MixedCropPlan() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const [rules, setRules] = useState<Rule[]>([]);
   const [soil, setSoil] = useState("loamy");
   const [weather, setWeather] = useState("warm");
@@ -104,7 +105,7 @@ export default function MixedCropPlan() {
           <h2 className="font-display text-xl font-bold">Recommended combinations</h2>
           {loading ? <Card className="p-6 text-center text-muted-foreground"><Loader2 className="mx-auto h-5 w-5 animate-spin" /></Card> : (
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {matches.map((r) => <CropPairCard key={r.id} rule={r as Rule & { matchScore: number }} />)}
+              {matches.map((r) => <CropPairCard key={r.id} rule={r as Rule & { matchScore: number }} lang={lang} />)}
             </div>
           )}
         </section>
@@ -115,20 +116,23 @@ export default function MixedCropPlan() {
   );
 }
 
-function CropPairCard({ rule }: { rule: Rule & { matchScore: number } }) {
+function CropPairCard({ rule, lang }: { rule: Rule & { matchScore: number }; lang: "en" | "hi" | "te" }) {
+  const source = [rule.primary_crop, rule.companion_crop, rule.notes, rule.source, ...rule.benefits];
+  const { items: localized, loading } = useLocalizedStrings(source, lang, `mixed-rule-${rule.id}`);
+  const [primary, companion, notes, sourceText, ...benefits] = localized;
   return (
     <Card className="overflow-hidden rounded-3xl shadow-soft transition hover:-translate-y-0.5 hover:shadow-elevated">
       <div className="bg-hero p-5 text-primary-foreground">
         <div className="flex items-start justify-between gap-3">
-          <div><p className="text-xs font-bold uppercase opacity-80">Crop pair</p><h3 className="font-display text-2xl font-extrabold">{rule.primary_crop} + {rule.companion_crop}</h3></div>
+          <div><p className="text-xs font-bold uppercase opacity-80">Crop pair</p><h3 className="font-display text-2xl font-extrabold">{primary} + {companion}{loading && <Loader2 className="ml-2 inline h-4 w-4 animate-spin" />}</h3></div>
           <ShieldCheck className="h-8 w-8 shrink-0" />
         </div>
       </div>
       <div className="space-y-4 p-5">
         <div><div className="mb-1 flex justify-between text-sm font-semibold"><span>Compatibility</span><span>{rule.matchScore}%</span></div><Progress value={rule.matchScore} className="h-2" /></div>
-        <p className="text-sm text-muted-foreground">{rule.notes}</p>
-        <div className="flex flex-wrap gap-2">{rule.benefits.map((b) => <span key={b} className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">{b}</span>)}</div>
-        <div className="rounded-2xl border bg-muted/40 p-3 text-xs text-muted-foreground"><AlertTriangle className="mr-1 inline h-3.5 w-3.5 text-warning" /> Source: {rule.source}</div>
+        <p className="text-sm text-muted-foreground">{notes}</p>
+        <div className="flex flex-wrap gap-2">{benefits.map((b) => <span key={b} className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">{b}</span>)}</div>
+        <div className="rounded-2xl border bg-muted/40 p-3 text-xs text-muted-foreground"><AlertTriangle className="mr-1 inline h-3.5 w-3.5 text-warning" /> Source: {sourceText}</div>
       </div>
     </Card>
   );
