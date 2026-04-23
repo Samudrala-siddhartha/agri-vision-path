@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Download, X, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useLang } from "@/i18n/LanguageProvider";
+import { tr, type Lang } from "@/i18n/translations";
 
 interface BIPEvent extends Event {
   prompt: () => Promise<void>;
@@ -11,7 +11,8 @@ interface BIPEvent extends Event {
 const DISMISS_KEY = "agripulse_install_dismissed_at";
 
 export function InstallPrompt() {
-  const { t } = useLang();
+  const lang = ((typeof localStorage !== "undefined" && localStorage.getItem("agripulse_lang")) || "en") as Lang;
+  const t = (key: Parameters<typeof tr>[0]) => tr(key, lang);
   const [evt, setEvt] = useState<BIPEvent | null>(null);
   const [show, setShow] = useState(false);
   const [iosHint, setIosHint] = useState(false);
