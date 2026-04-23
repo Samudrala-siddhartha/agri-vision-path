@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useLang } from "@/i18n/LanguageProvider";
+import { useLocalizedStrings } from "@/hooks/useLocalizedStrings";
 import landingHero from "@/assets/landing-hero.jpg";
 
 type Method = {
@@ -28,7 +29,7 @@ type MethodImage = { id: string; method_id: string; image_url: string; caption: 
 export default function FarmingMethods() {
   const { slug } = useParams();
   const nav = useNavigate();
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const [methods, setMethods] = useState<Method[]>([]);
   const [images, setImages] = useState<MethodImage[]>([]);
   const [loading, setLoading] = useState(true);
@@ -66,7 +67,7 @@ export default function FarmingMethods() {
             </section>
             {loading ? <Card className="p-6 text-center"><Loader2 className="mx-auto h-5 w-5 animate-spin" /></Card> : (
               <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                {methods.map((m) => <MethodCard key={m.id} method={m} image={images.find((img) => img.method_id === m.id)?.image_url} onOpen={() => nav(`/methods/${m.slug}`)} />)}
+                {methods.map((m) => <MethodCard key={m.id} method={m} lang={lang} image={images.find((img) => img.method_id === m.id)?.image_url} onOpen={() => nav(`/methods/${m.slug}`)} />)}
               </section>
             )}
           </>
@@ -76,8 +77,8 @@ export default function FarmingMethods() {
               <div className="overflow-hidden rounded-3xl shadow-soft">
                 <img src={selectedImages[0]?.image_url ?? selected.cover_image_url ?? landingHero} alt={selected.title} loading="lazy" className="h-72 w-full object-cover" />
               </div>
-              <div><Badge>{selected.category}</Badge><h1 className="mt-3 font-display text-4xl font-extrabold">{selected.title}</h1><p className="mt-3 text-muted-foreground">{selected.description}</p></div>
-              <InfoGrid method={selected} />
+              <MethodDetailHeader method={selected} lang={lang} />
+              <InfoGrid method={selected} lang={lang} />
             </div>
             <Card className="h-fit rounded-3xl p-5 shadow-soft">
               <h2 className="mb-4 flex items-center gap-2 font-display text-xl font-bold"><Images className="h-5 w-5 text-primary" /> Field gallery</h2>
@@ -96,15 +97,26 @@ export default function FarmingMethods() {
   );
 }
 
-function MethodCard({ method, image, onOpen }: { method: Method; image?: string; onOpen: () => void }) {
-  return <Card className="overflow-hidden rounded-3xl shadow-soft transition hover:-translate-y-0.5 hover:shadow-elevated"><img src={image ?? method.cover_image_url ?? landingHero} alt={method.title} loading="lazy" className="h-44 w-full object-cover" /><div className="space-y-3 p-4"><Badge variant="secondary">{method.category}</Badge><h2 className="font-display text-xl font-bold">{method.title}</h2><p className="line-clamp-3 text-sm text-muted-foreground">{method.description}</p><Button onClick={onOpen} className="w-full rounded-full">Open <ArrowRight className="ml-2 h-4 w-4" /></Button></div></Card>;
+function MethodCard({ method, image, onOpen, lang }: { method: Method; image?: string; onOpen: () => void; lang: "en" | "hi" | "te" }) {
+  const { items, loading } = useLocalizedStrings([method.category, method.title, method.description], lang, `method-card-${method.id}`);
+  return <Card className="overflow-hidden rounded-3xl shadow-soft transition hover:-translate-y-0.5 hover:shadow-elevated"><img src={image ?? method.cover_image_url ?? landingHero} alt={items[1]} loading="lazy" className="h-44 w-full object-cover" /><div className="space-y-3 p-4"><Badge variant="secondary">{items[0]}</Badge><h2 className="font-display text-xl font-bold">{items[1]}{loading && <Loader2 className="ml-2 inline h-4 w-4 animate-spin" />}</h2><p className="line-clamp-3 text-sm text-muted-foreground">{items[2]}</p><Button onClick={onOpen} className="w-full rounded-full">Open <ArrowRight className="ml-2 h-4 w-4" /></Button></div></Card>;
 }
 
-function InfoGrid({ method }: { method: Method }) {
+function MethodDetailHeader({ method, lang }: { method: Method; lang: "en" | "hi" | "te" }) {
+  const { items, loading } = useLocalizedStrings([method.category, method.title, method.description], lang, `method-detail-${method.id}`);
+  return <div><Badge>{items[0]}</Badge><h1 className="mt-3 font-display text-4xl font-extrabold">{items[1]}{loading && <Loader2 className="ml-2 inline h-4 w-4 animate-spin" />}</h1><p className="mt-3 text-muted-foreground">{items[2]}</p></div>;
+}
+
+function InfoGrid({ method, lang }: { method: Method; lang: "en" | "hi" | "te" }) {
+  const text = [...method.benefits, ...method.example_crops, ...method.use_cases];
+  const { items } = useLocalizedStrings(text, lang, `method-info-${method.id}`);
+  const benefits = items.slice(0, method.benefits.length);
+  const crops = items.slice(method.benefits.length, method.benefits.length + method.example_crops.length);
+  const uses = items.slice(method.benefits.length + method.example_crops.length);
   const groups = [
-    { icon: TrendingUp, title: "Benefits", values: method.benefits },
-    { icon: Sprout, title: "Example crops", values: method.example_crops },
-    { icon: Leaf, title: "Real use cases", values: method.use_cases },
+    { icon: TrendingUp, title: "Benefits", values: benefits },
+    { icon: Sprout, title: "Example crops", values: crops },
+    { icon: Leaf, title: "Real use cases", values: uses },
   ];
   return <div className="grid gap-4 md:grid-cols-3">{groups.map((g) => <Card key={g.title} className="rounded-3xl p-4"><g.icon className="mb-3 h-6 w-6 text-primary" /><h3 className="font-display font-bold">{g.title}</h3><ul className="mt-3 space-y-2 text-sm text-muted-foreground">{g.values.map((v) => <li key={v}>• {v}</li>)}</ul></Card>)}</div>;
 }
