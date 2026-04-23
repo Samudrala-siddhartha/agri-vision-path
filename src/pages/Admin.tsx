@@ -369,6 +369,71 @@ function AnnouncementsTab() {
   );
 }
 
+function MethodsAdminTab() {
+  const [rows, setRows] = useState<any[]>([]);
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("Intercropping");
+  const [description, setDescription] = useState("");
+  const [benefits, setBenefits] = useState("Yield, Soil health, Income");
+  const [busy, setBusy] = useState(false);
+  const load = async () => {
+    const { data } = await (supabase as any).from("farming_methods").select("id,title,category,description,active,slug,benefits").order("created_at", { ascending: false });
+    setRows(data ?? []);
+  };
+  useEffect(() => { load(); }, []);
+  const create = async (e: FormEvent) => {
+    e.preventDefault();
+    const cleanTitle = title.trim();
+    if (!cleanTitle || !description.trim()) return;
+    setBusy(true);
+    const slug = cleanTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+    const { error } = await (supabase as any).from("farming_methods").insert({
+      title: cleanTitle, category: category.trim(), slug, description: description.trim(),
+      benefits: benefits.split(",").map((x) => x.trim()).filter(Boolean), active: true,
+    });
+    setBusy(false);
+    if (error) return toast({ title: "Method failed", description: error.message, variant: "destructive" });
+    toast({ title: "Farming method added" });
+    setTitle(""); setDescription(""); load();
+  };
+  const remove = async (id: string) => {
+    if (!confirm("Delete this farming method?")) return;
+    const { error } = await (supabase as any).from("farming_methods").delete().eq("id", id);
+    if (error) return toast({ title: "Delete failed", description: error.message, variant: "destructive" });
+    load();
+  };
+  return <div className="grid gap-4 lg:grid-cols-[0.85fr_1.15fr]"><Card className="p-5"><h3 className="mb-3 font-display text-lg font-bold">Add farming method</h3><form onSubmit={create} className="space-y-3"><div><Label>Title</Label><Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Hydroponics" /></div><div><Label>Category</Label><Input value={category} onChange={(e) => setCategory(e.target.value)} /></div><div><Label>Description</Label><Textarea rows={5} value={description} onChange={(e) => setDescription(e.target.value)} /></div><div><Label>Benefits, comma separated</Label><Input value={benefits} onChange={(e) => setBenefits(e.target.value)} /></div><Button className="w-full" disabled={busy || !title.trim() || !description.trim()}>{busy ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save method"}</Button></form></Card><Card className="overflow-hidden"><div className="grid grid-cols-12 gap-2 border-b bg-muted/40 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground"><span className="col-span-4">Method</span><span className="col-span-3">Category</span><span className="col-span-3">Status</span><span className="col-span-2">Action</span></div>{rows.map((r) => <div key={r.id} className="grid grid-cols-12 items-center gap-2 border-b px-4 py-3 text-sm"><span className="col-span-4 min-w-0"><p className="truncate font-medium">{r.title}</p><p className="truncate text-xs text-muted-foreground">{r.slug}</p></span><span className="col-span-3">{r.category}</span><span className="col-span-3"><Badge variant={r.active ? "secondary" : "outline"}>{r.active ? "Active" : "Hidden"}</Badge></span><span className="col-span-2"><Button size="icon" variant="ghost" onClick={() => remove(r.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button></span></div>)}</Card></div>;
+}
+
+function MixedCropAdminTab() {
+  const [rows, setRows] = useState<any[]>([]);
+  const [primary, setPrimary] = useState("");
+  const [companion, setCompanion] = useState("");
+  const [score, setScore] = useState("85");
+  const [benefits, setBenefits] = useState("Nitrogen fixing, Pest reduction, Dual income");
+  const [notes, setNotes] = useState("");
+  const load = async () => {
+    const { data } = await (supabase as any).from("mixed_crop_rules").select("id,primary_crop,companion_crop,compatibility_score,benefits,active,source").order("compatibility_score", { ascending: false });
+    setRows(data ?? []);
+  };
+  useEffect(() => { load(); }, []);
+  const create = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!primary.trim() || !companion.trim()) return;
+    const { error } = await (supabase as any).from("mixed_crop_rules").insert({ primary_crop: primary.trim(), companion_crop: companion.trim(), compatibility_score: Number(score) || 80, benefits: benefits.split(",").map((x) => x.trim()).filter(Boolean), principles: ["Tall + short crops", "Deep + shallow roots", "Always include legumes"], notes: notes.trim(), source: "admin/manual", active: true });
+    if (error) return toast({ title: "Rule failed", description: error.message, variant: "destructive" });
+    toast({ title: "Mixed crop rule added" });
+    setPrimary(""); setCompanion(""); setNotes(""); load();
+  };
+  const remove = async (id: string) => {
+    if (!confirm("Delete this crop combination?")) return;
+    const { error } = await (supabase as any).from("mixed_crop_rules").delete().eq("id", id);
+    if (error) return toast({ title: "Delete failed", description: error.message, variant: "destructive" });
+    load();
+  };
+  return <div className="grid gap-4 lg:grid-cols-[0.85fr_1.15fr]"><Card className="p-5"><h3 className="mb-3 font-display text-lg font-bold">Add mixed crop combination</h3><form onSubmit={create} className="space-y-3"><div className="grid gap-3 sm:grid-cols-2"><div><Label>Main crop</Label><Input value={primary} onChange={(e) => setPrimary(e.target.value)} /></div><div><Label>Companion crop</Label><Input value={companion} onChange={(e) => setCompanion(e.target.value)} /></div></div><div><Label>Compatibility score</Label><Input inputMode="numeric" value={score} onChange={(e) => setScore(e.target.value)} /></div><div><Label>Benefits</Label><Input value={benefits} onChange={(e) => setBenefits(e.target.value)} /></div><div><Label>Notes</Label><Textarea rows={4} value={notes} onChange={(e) => setNotes(e.target.value)} /></div><Button className="w-full">Save combination</Button></form></Card><Card className="overflow-hidden"><div className="grid grid-cols-12 gap-2 border-b bg-muted/40 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground"><span className="col-span-5">Pair</span><span className="col-span-2">Score</span><span className="col-span-3">Source</span><span className="col-span-2">Action</span></div>{rows.map((r) => <div key={r.id} className="grid grid-cols-12 items-center gap-2 border-b px-4 py-3 text-sm"><span className="col-span-5 font-medium">{r.primary_crop} + {r.companion_crop}</span><span className="col-span-2">{r.compatibility_score}%</span><span className="col-span-3"><Badge variant="outline">{r.source}</Badge></span><span className="col-span-2"><Button size="icon" variant="ghost" onClick={() => remove(r.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button></span></div>)}</Card></div>;
+}
+
 function UsersTab() {
   const [rows, setRows] = useState<any[]>([]);
   const [busyUser, setBusyUser] = useState<string | null>(null);
