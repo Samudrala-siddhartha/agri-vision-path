@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Camera, Sprout, BarChart3, Beaker, AlertTriangle, Plus, MapPin, Leaf } from "lucide-react";
+import { Camera, Sprout, BarChart3, Beaker, AlertTriangle, Plus, MapPin, Leaf, Rows3 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -64,7 +64,8 @@ const Dashboard = () => {
   const quickActions = [
     { icon: Camera, label: t("scan_crop"), to: "/scan/new", tone: "bg-primary text-primary-foreground" },
     { icon: Sprout, label: t("plan_crop"), to: "/plan", tone: "bg-secondary text-secondary-foreground" },
-    { icon: BarChart3, label: t("my_farm"), to: "/dashboard#farm", tone: "bg-accent text-accent-foreground" },
+    { icon: Rows3, label: t("farming_methods"), to: "/methods", tone: "bg-accent text-accent-foreground" },
+    { icon: BarChart3, label: t("mixed_crop_planning"), to: "/mixed-crops", tone: "bg-card border-2 border-primary/20 text-foreground" },
     { icon: Beaker, label: t("spray_calc"), to: "/spray", tone: "bg-card border-2 border-primary/20 text-foreground" },
   ];
 
@@ -80,7 +81,7 @@ const Dashboard = () => {
         {/* Quick actions */}
         <section>
           <h2 className="sr-only">{t("quick_actions")}</h2>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {quickActions.map((a, i) => (
               <motion.div
                 key={a.label}
