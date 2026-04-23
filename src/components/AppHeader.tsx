@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
   Bell, Camera, HelpCircle, Home, Languages, LayoutDashboard, LifeBuoy, LogOut, Megaphone,
-  Menu, MessageCircle, Moon, RotateCcw, ShieldCheck, Sun, User, Wheat,
+  Menu, MessageCircle, Moon, RotateCcw, Rows3, ShieldCheck, Sprout, Sun, User, Wheat,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -53,6 +53,8 @@ export function AppHeader() {
     { icon: Home, label: t("dashboard"), to: "/dashboard", paths: ["/dashboard"] },
     { icon: Camera, label: t("scan_crop"), to: "/scan/new", paths: ["/scan"] },
     { icon: Wheat, label: t("plan_crop"), to: "/plan", paths: ["/plan"] },
+    { icon: Sprout, label: t("mixed_crop_planning"), to: "/mixed-crops", paths: ["/mixed-crops"] },
+    { icon: Rows3, label: t("farming_methods"), to: "/methods", paths: ["/methods"] },
     { icon: LayoutDashboard, label: t("my_farm"), to: "/dashboard", paths: ["/field"] },
   ];
 
