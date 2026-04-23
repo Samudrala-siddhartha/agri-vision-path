@@ -233,6 +233,89 @@ export type Database = {
         }
         Relationships: []
       }
+      farming_method_images: {
+        Row: {
+          caption: string | null
+          created_at: string
+          id: string
+          image_url: string
+          method_id: string
+          sort_order: number
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          image_url: string
+          method_id: string
+          sort_order?: number
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string
+          method_id?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "farming_method_images_method_id_fkey"
+            columns: ["method_id"]
+            isOneToOne: false
+            referencedRelation: "farming_methods"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      farming_methods: {
+        Row: {
+          active: boolean
+          benefits: string[]
+          category: string
+          cover_image_url: string | null
+          created_at: string
+          created_by: string | null
+          description: string
+          example_crops: string[]
+          id: string
+          slug: string
+          title: string
+          updated_at: string
+          use_cases: string[]
+        }
+        Insert: {
+          active?: boolean
+          benefits?: string[]
+          category: string
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description: string
+          example_crops?: string[]
+          id?: string
+          slug: string
+          title: string
+          updated_at?: string
+          use_cases?: string[]
+        }
+        Update: {
+          active?: boolean
+          benefits?: string[]
+          category?: string
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          example_crops?: string[]
+          id?: string
+          slug?: string
+          title?: string
+          updated_at?: string
+          use_cases?: string[]
+        }
+        Relationships: []
+      }
       fields: {
         Row: {
           created_at: string
@@ -266,6 +349,63 @@ export type Database = {
           name?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      mixed_crop_rules: {
+        Row: {
+          active: boolean
+          benefits: string[]
+          companion_crop: string
+          compatibility_score: number
+          created_at: string
+          created_by: string | null
+          existing_crop: string | null
+          id: string
+          min_land_acres: number
+          notes: string
+          primary_crop: string
+          principles: string[]
+          soil_types: string[]
+          source: string
+          updated_at: string
+          weather: string
+        }
+        Insert: {
+          active?: boolean
+          benefits?: string[]
+          companion_crop: string
+          compatibility_score?: number
+          created_at?: string
+          created_by?: string | null
+          existing_crop?: string | null
+          id?: string
+          min_land_acres?: number
+          notes?: string
+          primary_crop: string
+          principles?: string[]
+          soil_types?: string[]
+          source?: string
+          updated_at?: string
+          weather?: string
+        }
+        Update: {
+          active?: boolean
+          benefits?: string[]
+          companion_crop?: string
+          compatibility_score?: number
+          created_at?: string
+          created_by?: string | null
+          existing_crop?: string | null
+          id?: string
+          min_land_acres?: number
+          notes?: string
+          primary_crop?: string
+          principles?: string[]
+          soil_types?: string[]
+          source?: string
+          updated_at?: string
+          weather?: string
         }
         Relationships: []
       }

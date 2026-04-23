@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
-import { Loader2, Database, Users, FileText, Image as ImageIcon, ShieldAlert, Sparkles, LifeBuoy, Ban, PauseCircle, CheckCircle2, Megaphone } from "lucide-react";
+import { Loader2, Database, Users, FileText, Image as ImageIcon, ShieldAlert, Sparkles, LifeBuoy, Ban, PauseCircle, CheckCircle2, Megaphone, Rows3, Sprout, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Admin = () => {
@@ -60,14 +60,16 @@ const Admin = () => {
             <p className="text-sm text-muted-foreground">Manage RAG knowledge, references, users, scans, and audit trail.</p>
           </div>
 
-          <Tabs defaultValue="overview">
-            <TabsList className="grid w-full grid-cols-4 md:grid-cols-8">
+            <Tabs defaultValue="overview">
+            <TabsList className="grid w-full grid-cols-3 md:grid-cols-5 lg:grid-cols-10">
               <TabsTrigger value="overview" className="gap-2"><Sparkles className="h-4 w-4" />Overview</TabsTrigger>
               <TabsTrigger value="rag" className="gap-2"><Database className="h-4 w-4" />RAG</TabsTrigger>
               <TabsTrigger value="refs" className="gap-2"><ImageIcon className="h-4 w-4" />References</TabsTrigger>
               <TabsTrigger value="scans" className="gap-2"><FileText className="h-4 w-4" />Scans</TabsTrigger>
               <TabsTrigger value="tickets" className="gap-2"><LifeBuoy className="h-4 w-4" />Tickets</TabsTrigger>
               <TabsTrigger value="announcements" className="gap-2"><Megaphone className="h-4 w-4" />Popups</TabsTrigger>
+              <TabsTrigger value="methods" className="gap-2"><Rows3 className="h-4 w-4" />Methods</TabsTrigger>
+              <TabsTrigger value="mixed" className="gap-2"><Sprout className="h-4 w-4" />Mixed</TabsTrigger>
               <TabsTrigger value="users" className="gap-2"><Users className="h-4 w-4" />Users</TabsTrigger>
               <TabsTrigger value="audit" className="gap-2"><ShieldAlert className="h-4 w-4" />Audit</TabsTrigger>
             </TabsList>
@@ -78,6 +80,8 @@ const Admin = () => {
             <TabsContent value="scans" className="pt-4"><ScansTab /></TabsContent>
             <TabsContent value="tickets" className="pt-4"><TicketsTab /></TabsContent>
             <TabsContent value="announcements" className="pt-4"><AnnouncementsTab /></TabsContent>
+            <TabsContent value="methods" className="pt-4"><MethodsAdminTab /></TabsContent>
+            <TabsContent value="mixed" className="pt-4"><MixedCropAdminTab /></TabsContent>
             <TabsContent value="users" className="pt-4"><UsersTab /></TabsContent>
             <TabsContent value="audit" className="pt-4"><AuditTab /></TabsContent>
           </Tabs>
@@ -363,6 +367,71 @@ function AnnouncementsTab() {
       </Card>
     </div>
   );
+}
+
+function MethodsAdminTab() {
+  const [rows, setRows] = useState<any[]>([]);
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("Intercropping");
+  const [description, setDescription] = useState("");
+  const [benefits, setBenefits] = useState("Yield, Soil health, Income");
+  const [busy, setBusy] = useState(false);
+  const load = async () => {
+    const { data } = await (supabase as any).from("farming_methods").select("id,title,category,description,active,slug,benefits").order("created_at", { ascending: false });
+    setRows(data ?? []);
+  };
+  useEffect(() => { load(); }, []);
+  const create = async (e: FormEvent) => {
+    e.preventDefault();
+    const cleanTitle = title.trim();
+    if (!cleanTitle || !description.trim()) return;
+    setBusy(true);
+    const slug = cleanTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+    const { error } = await (supabase as any).from("farming_methods").insert({
+      title: cleanTitle, category: category.trim(), slug, description: description.trim(),
+      benefits: benefits.split(",").map((x) => x.trim()).filter(Boolean), active: true,
+    });
+    setBusy(false);
+    if (error) return toast({ title: "Method failed", description: error.message, variant: "destructive" });
+    toast({ title: "Farming method added" });
+    setTitle(""); setDescription(""); load();
+  };
+  const remove = async (id: string) => {
+    if (!confirm("Delete this farming method?")) return;
+    const { error } = await (supabase as any).from("farming_methods").delete().eq("id", id);
+    if (error) return toast({ title: "Delete failed", description: error.message, variant: "destructive" });
+    load();
+  };
+  return <div className="grid gap-4 lg:grid-cols-[0.85fr_1.15fr]"><Card className="p-5"><h3 className="mb-3 font-display text-lg font-bold">Add farming method</h3><form onSubmit={create} className="space-y-3"><div><Label>Title</Label><Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Hydroponics" /></div><div><Label>Category</Label><Input value={category} onChange={(e) => setCategory(e.target.value)} /></div><div><Label>Description</Label><Textarea rows={5} value={description} onChange={(e) => setDescription(e.target.value)} /></div><div><Label>Benefits, comma separated</Label><Input value={benefits} onChange={(e) => setBenefits(e.target.value)} /></div><Button className="w-full" disabled={busy || !title.trim() || !description.trim()}>{busy ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save method"}</Button></form></Card><Card className="overflow-hidden"><div className="grid grid-cols-12 gap-2 border-b bg-muted/40 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground"><span className="col-span-4">Method</span><span className="col-span-3">Category</span><span className="col-span-3">Status</span><span className="col-span-2">Action</span></div>{rows.map((r) => <div key={r.id} className="grid grid-cols-12 items-center gap-2 border-b px-4 py-3 text-sm"><span className="col-span-4 min-w-0"><p className="truncate font-medium">{r.title}</p><p className="truncate text-xs text-muted-foreground">{r.slug}</p></span><span className="col-span-3">{r.category}</span><span className="col-span-3"><Badge variant={r.active ? "secondary" : "outline"}>{r.active ? "Active" : "Hidden"}</Badge></span><span className="col-span-2"><Button size="icon" variant="ghost" onClick={() => remove(r.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button></span></div>)}</Card></div>;
+}
+
+function MixedCropAdminTab() {
+  const [rows, setRows] = useState<any[]>([]);
+  const [primary, setPrimary] = useState("");
+  const [companion, setCompanion] = useState("");
+  const [score, setScore] = useState("85");
+  const [benefits, setBenefits] = useState("Nitrogen fixing, Pest reduction, Dual income");
+  const [notes, setNotes] = useState("");
+  const load = async () => {
+    const { data } = await (supabase as any).from("mixed_crop_rules").select("id,primary_crop,companion_crop,compatibility_score,benefits,active,source").order("compatibility_score", { ascending: false });
+    setRows(data ?? []);
+  };
+  useEffect(() => { load(); }, []);
+  const create = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!primary.trim() || !companion.trim()) return;
+    const { error } = await (supabase as any).from("mixed_crop_rules").insert({ primary_crop: primary.trim(), companion_crop: companion.trim(), compatibility_score: Number(score) || 80, benefits: benefits.split(",").map((x) => x.trim()).filter(Boolean), principles: ["Tall + short crops", "Deep + shallow roots", "Always include legumes"], notes: notes.trim(), source: "admin/manual", active: true });
+    if (error) return toast({ title: "Rule failed", description: error.message, variant: "destructive" });
+    toast({ title: "Mixed crop rule added" });
+    setPrimary(""); setCompanion(""); setNotes(""); load();
+  };
+  const remove = async (id: string) => {
+    if (!confirm("Delete this crop combination?")) return;
+    const { error } = await (supabase as any).from("mixed_crop_rules").delete().eq("id", id);
+    if (error) return toast({ title: "Delete failed", description: error.message, variant: "destructive" });
+    load();
+  };
+  return <div className="grid gap-4 lg:grid-cols-[0.85fr_1.15fr]"><Card className="p-5"><h3 className="mb-3 font-display text-lg font-bold">Add mixed crop combination</h3><form onSubmit={create} className="space-y-3"><div className="grid gap-3 sm:grid-cols-2"><div><Label>Main crop</Label><Input value={primary} onChange={(e) => setPrimary(e.target.value)} /></div><div><Label>Companion crop</Label><Input value={companion} onChange={(e) => setCompanion(e.target.value)} /></div></div><div><Label>Compatibility score</Label><Input inputMode="numeric" value={score} onChange={(e) => setScore(e.target.value)} /></div><div><Label>Benefits</Label><Input value={benefits} onChange={(e) => setBenefits(e.target.value)} /></div><div><Label>Notes</Label><Textarea rows={4} value={notes} onChange={(e) => setNotes(e.target.value)} /></div><Button className="w-full">Save combination</Button></form></Card><Card className="overflow-hidden"><div className="grid grid-cols-12 gap-2 border-b bg-muted/40 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground"><span className="col-span-5">Pair</span><span className="col-span-2">Score</span><span className="col-span-3">Source</span><span className="col-span-2">Action</span></div>{rows.map((r) => <div key={r.id} className="grid grid-cols-12 items-center gap-2 border-b px-4 py-3 text-sm"><span className="col-span-5 font-medium">{r.primary_crop} + {r.companion_crop}</span><span className="col-span-2">{r.compatibility_score}%</span><span className="col-span-3"><Badge variant="outline">{r.source}</Badge></span><span className="col-span-2"><Button size="icon" variant="ghost" onClick={() => remove(r.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button></span></div>)}</Card></div>;
 }
 
 function UsersTab() {

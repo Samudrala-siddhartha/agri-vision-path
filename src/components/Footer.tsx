@@ -27,6 +27,8 @@ export function Footer() {
             <li><Link to="/dashboard" className="story-link text-foreground/80 hover:text-foreground">{t("dashboard")}</Link></li>
             <li><Link to="/scan/new" className="story-link text-foreground/80 hover:text-foreground">{t("scan_crop")}</Link></li>
             <li><Link to="/plan" className="story-link text-foreground/80 hover:text-foreground">{t("plan_crop")}</Link></li>
+            <li><Link to="/mixed-crops" className="story-link text-foreground/80 hover:text-foreground">{t("mixed_crop_planning")}</Link></li>
+            <li><Link to="/methods" className="story-link text-foreground/80 hover:text-foreground">{t("farming_methods")}</Link></li>
             <li><Link to="/spray" className="story-link text-foreground/80 hover:text-foreground">{t("spray_calc")}</Link></li>
           </ul>
         </div>
