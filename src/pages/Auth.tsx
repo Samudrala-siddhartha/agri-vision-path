@@ -174,7 +174,7 @@ const Auth = () => {
                   <div className="space-y-2">
                     <Label htmlFor="su-pw">{t("password")}</Label>
                     <div className="relative">
-                      <Input id="su-pw" type={showPw ? "text" : "password"} required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} className="pr-10" />
+                      <Input id="su-pw" type={showPw ? "text" : "password"} required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} className="pr-10" />
                       {pwToggle}
                     </div>
                   </div>
