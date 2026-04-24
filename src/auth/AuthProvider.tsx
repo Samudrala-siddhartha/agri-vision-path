@@ -47,6 +47,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signOut = async () => { await supabase.auth.signOut(); };
   const signOutEverywhere = async () => { await supabase.auth.signOut({ scope: "global" }); };
 
+  // Auto sign-out after 30 minutes of inactivity (only when signed in)
+  useIdleLogout(Boolean(user));
+
   return (
     <AuthContext.Provider value={{ user, session, accountStatus, loading, signOut, signOutEverywhere }}>
       {children}
