@@ -352,6 +352,33 @@ export type Database = {
         }
         Relationships: []
       }
+      login_attempts: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          ip: string | null
+          success: boolean
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          ip?: string | null
+          success?: boolean
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          ip?: string | null
+          success?: boolean
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       mixed_crop_rules: {
         Row: {
           active: boolean
@@ -416,9 +443,13 @@ export type Database = {
           created_at: string
           display_name: string | null
           id: string
+          last_login_at: string | null
           moderated_at: string | null
           moderation_reason: string | null
           preferred_language: string
+          suspicious: boolean
+          suspicious_at: string | null
+          suspicious_reason: string | null
           updated_at: string
           user_id: string
         }
@@ -428,9 +459,13 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id?: string
+          last_login_at?: string | null
           moderated_at?: string | null
           moderation_reason?: string | null
           preferred_language?: string
+          suspicious?: boolean
+          suspicious_at?: string | null
+          suspicious_reason?: string | null
           updated_at?: string
           user_id: string
         }
@@ -440,9 +475,13 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           id?: string
+          last_login_at?: string | null
           moderated_at?: string | null
           moderation_reason?: string | null
           preferred_language?: string
+          suspicious?: boolean
+          suspicious_at?: string | null
+          suspicious_reason?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -662,6 +701,39 @@ export type Database = {
         }
         Relationships: []
       }
+      user_activity_log: {
+        Row: {
+          action: string
+          created_at: string
+          endpoint: string | null
+          id: string
+          ip: string | null
+          meta: Json
+          status: number | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          endpoint?: string | null
+          id?: string
+          ip?: string | null
+          meta?: Json
+          status?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          endpoint?: string | null
+          id?: string
+          ip?: string | null
+          meta?: Json
+          status?: number | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -692,6 +764,7 @@ export type Database = {
         Args: { _key: string; _max: number; _window_seconds: number }
         Returns: boolean
       }
+      evaluate_suspicious: { Args: { _user_id: string }; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -755,6 +828,7 @@ export type Database = {
           votes: number
         }[]
       }
+      touch_last_login: { Args: { _user_id: string }; Returns: undefined }
     }
     Enums: {
       app_role: "admin" | "user"
