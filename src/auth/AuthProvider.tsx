@@ -8,6 +8,7 @@ type Ctx = {
   accountStatus: "active" | "suspended" | "banned" | null;
   loading: boolean;
   signOut: () => Promise<void>;
+  signOutEverywhere: () => Promise<void>;
 };
 
 const AuthContext = createContext<Ctx | null>(null);
@@ -43,9 +44,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signOut = async () => { await supabase.auth.signOut(); };
+  const signOutEverywhere = async () => { await supabase.auth.signOut({ scope: "global" }); };
 
   return (
-    <AuthContext.Provider value={{ user, session, accountStatus, loading, signOut }}>
+    <AuthContext.Provider value={{ user, session, accountStatus, loading, signOut, signOutEverywhere }}>
       {children}
     </AuthContext.Provider>
   );
