@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { clientIp, getServiceClient, getUserIdFromAuthHeader, logActivity, rateLimit, rateLimitedResponse } from "../_shared/security.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -17,17 +18,22 @@ Deno.serve(async (req) => {
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supa = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    const svc = getServiceClient();
+
+    const ip = clientIp(req);
+    const uid = await getUserIdFromAuthHeader(req);
+
+    // Per-user rate limit: 20 chatbot turns per hour
+    const rl = await rateLimit(svc, "chat", uid ?? `ip:${ip}`, 20, 3600);
+    if (!rl.allowed) {
+      await logActivity(svc, uid, "agri_chat", 429, "/agri-chat", {}, ip);
+      return rateLimitedResponse(corsHeaders);
+    }
 
     // Pull farmer context from auth header
-    const authHeader = req.headers.get("Authorization");
     let context = "No user context available.";
-    if (authHeader) {
-      const userClient = createClient(SUPABASE_URL, Deno.env.get("SUPABASE_ANON_KEY")!, {
-        global: { headers: { Authorization: authHeader } },
-      });
-      const { data: u } = await userClient.auth.getUser();
-      const uid = u?.user?.id;
-      if (uid) {
+    if (uid) {
+      {
         const [{ data: fields }, { data: scans }] = await Promise.all([
           supa.from("fields").select("name,crop,location").eq("user_id", uid).limit(10),
           supa.from("scans").select("crop,disease_name,severity,created_at").eq("user_id", uid).order("created_at", { ascending: false }).limit(5),

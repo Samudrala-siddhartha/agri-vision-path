@@ -14,9 +14,15 @@ import { useLang } from "@/i18n/LanguageProvider";
 import { Eye, EyeOff } from "lucide-react";
 import appLogo from "@/assets/app-logo.png";
 
+const trackAttempt = (email: string, success: boolean) => {
+  // Best-effort: failures must not block UX
+  supabase.functions.invoke("track-auth-attempt", { body: { email, success } }).catch(() => {});
+};
+
 const Auth = () => {
   const nav = useNavigate();
   const { t } = useLang();
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -26,13 +32,27 @@ const Auth = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
+    const cleanName = fullName.trim();
+    if (cleanName.length < 2) {
+      return toast({ title: "Please enter your full name", variant: "destructive" });
+    }
     setBusy(true);
-    const { error } = await supabase.auth.signUp({
-      email, password,
-      options: { emailRedirectTo: `${window.location.origin}/dashboard` },
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/dashboard`,
+        data: { display_name: cleanName, full_name: cleanName },
+      },
     });
     setBusy(false);
     if (error) return toast({ title: error.message, variant: "destructive" });
+    // Persist display_name to profile (the new-user trigger may have used the email prefix)
+    if (data.user) {
+      await (supabase.from("profiles") as any)
+        .update({ display_name: cleanName, last_login_at: new Date().toISOString() })
+        .eq("user_id", data.user.id);
+    }
     toast({ title: "Account created — you're in!" });
     nav("/dashboard");
   };
@@ -40,9 +60,14 @@ const Auth = () => {
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     setBusy(false);
+    trackAttempt(email, !error);
     if (error) return toast({ title: error.message, variant: "destructive" });
+    if (data.user) {
+      // touch last_login asynchronously, don't await
+      (supabase as any).rpc("touch_last_login", { _user_id: data.user.id }).then(() => {});
+    }
     nav("/dashboard");
   };
 
@@ -129,6 +154,10 @@ const Auth = () => {
 
               <TabsContent value="signup">
                 <form onSubmit={handleSignUp} className="space-y-4 pt-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="su-name">Full name</Label>
+                    <Input id="su-name" type="text" required minLength={2} maxLength={80} value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Your name" />
+                  </div>
                   <div className="space-y-2">
                     <Label htmlFor="su-email">{t("email")}</Label>
                     <Input id="su-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />

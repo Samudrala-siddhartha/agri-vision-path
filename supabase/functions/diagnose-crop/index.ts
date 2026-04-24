@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { clientIp, getServiceClient, getUserIdFromAuthHeader, logActivity, rateLimit, rateLimitedResponse } from "../_shared/security.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -31,10 +32,17 @@ Deno.serve(async (req) => {
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
     const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
     const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const svc = getServiceClient();
 
-    // Rate limit best-effort by IP
-    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-    await sb.rpc("check_rate_limit", { _key: `diagnose:${ip}`, _max: 20, _window_seconds: 60 });
+    // Per-user rate limit: 10 scans per hour. Falls back to IP for anon.
+    const ip = clientIp(req);
+    const userId = await getUserIdFromAuthHeader(req);
+    const rlId = userId ?? `ip:${ip}`;
+    const rl = await rateLimit(svc, "diagnose", rlId, 10, 3600);
+    if (!rl.allowed) {
+      await logActivity(svc, userId, "diagnose_crop", 429, "/diagnose-crop", { ip }, ip);
+      return rateLimitedResponse(corsHeaders);
+    }
 
     const { crop, interview, language = "en", images } = await req.json();
     if (!crop || !images?.length) {
@@ -168,6 +176,7 @@ Rules:
     args.sources = sources;
     args.similar_images = ragImages.slice(0, 4).map((i: any) => ({ image_url: i.image_url, disease_key: i.disease_key, similarity: i.similarity }));
 
+    await logActivity(svc, userId, "diagnose_crop", 200, "/diagnose-crop", { crop, severity: args.severity }, ip);
     return new Response(JSON.stringify(args), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("diagnose-crop error", e);
