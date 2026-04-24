@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { clientIp, getServiceClient, getUserIdFromAuthHeader, logActivity, rateLimit, rateLimitedResponse } from "../_shared/security.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -39,6 +40,18 @@ Deno.serve(async (req) => {
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supa = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    const svc = getServiceClient();
+    const ip = clientIp(req);
+    const uid = await getUserIdFromAuthHeader(req);
+
+    // Per-user rate limit: 15 plans per hour
+    const rl = await rateLimit(svc, "plan", uid ?? `ip:${ip}`, 15, 3600);
+    if (!rl.allowed) {
+      await logActivity(svc, uid, "recommend_crop", 429, "/recommend-crop", {}, ip);
+      return new Response(JSON.stringify({ error: "Usage limit reached. Try later.", code: "rate_limited" }), {
+        status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     const { data: rows, error } = await supa.rpc("recommend_crops_knn", params);
     if (error) throw new Error(`knn: ${error.message}`);
@@ -136,6 +149,7 @@ Deno.serve(async (req) => {
       ...(enriched[t.label] ?? {}),
     }));
 
+    await logActivity(svc, uid, "recommend_crop", 200, "/recommend-crop", { land_acres: land }, ip);
     return new Response(JSON.stringify({ recommendations }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
