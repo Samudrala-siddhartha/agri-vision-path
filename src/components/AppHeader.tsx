@@ -22,7 +22,7 @@ import appLogo from "@/assets/app-logo.png";
 
 export function AppHeader() {
   const { t } = useLang();
-  const { user, signOut } = useAuth();
+  const { user, signOut, signOutEverywhere } = useAuth();
   const nav = useNavigate();
   const location = useLocation();
   const [isAdmin, setIsAdmin] = useState(false);
@@ -46,6 +46,11 @@ export function AppHeader() {
   const logout = async () => {
     if (!window.confirm("Sign out of AgriPulse?")) return;
     await signOut();
+    nav("/");
+  };
+  const logoutAll = async () => {
+    if (!window.confirm("Sign out of every device for this account?")) return;
+    await signOutEverywhere();
     nav("/");
   };
 
@@ -137,6 +142,11 @@ export function AppHeader() {
                         <LogOut className="h-5 w-5" /> <span>{t("sign_out")}</span>
                       </button>
                     </SheetClose>
+                    <SheetClose asChild>
+                      <button onClick={logoutAll} className="menu-row text-destructive hover:bg-destructive/10">
+                        <LogOut className="h-5 w-5" /> <span>Sign out everywhere</span>
+                      </button>
+                    </SheetClose>
                   </MenuSection>
                 </nav>
               </SheetContent>
@@ -175,6 +185,9 @@ export function AppHeader() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={logout} className="gap-2 text-destructive focus:text-destructive">
                   <LogOut className="h-4 w-4" /> {t("sign_out")}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={logoutAll} className="gap-2 text-destructive focus:text-destructive">
+                  <LogOut className="h-4 w-4" /> Sign out everywhere
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

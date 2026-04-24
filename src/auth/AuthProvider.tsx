@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { useIdleLogout } from "./useIdleLogout";
 
 type Ctx = {
   user: User | null;
@@ -8,6 +9,7 @@ type Ctx = {
   accountStatus: "active" | "suspended" | "banned" | null;
   loading: boolean;
   signOut: () => Promise<void>;
+  signOutEverywhere: () => Promise<void>;
 };
 
 const AuthContext = createContext<Ctx | null>(null);
@@ -43,9 +45,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signOut = async () => { await supabase.auth.signOut(); };
+  const signOutEverywhere = async () => { await supabase.auth.signOut({ scope: "global" }); };
+
+  // Auto sign-out after 30 minutes of inactivity (only when signed in)
+  useIdleLogout(Boolean(user));
 
   return (
-    <AuthContext.Provider value={{ user, session, accountStatus, loading, signOut }}>
+    <AuthContext.Provider value={{ user, session, accountStatus, loading, signOut, signOutEverywhere }}>
       {children}
     </AuthContext.Provider>
   );

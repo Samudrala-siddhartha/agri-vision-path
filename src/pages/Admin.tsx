@@ -15,11 +15,13 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
 import { Loader2, Database, Users, FileText, Image as ImageIcon, ShieldAlert, Sparkles, LifeBuoy, Ban, PauseCircle, CheckCircle2, Megaphone, Rows3, Sprout, Trash2, AlertTriangle, Activity } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAdminAlerts } from "@/hooks/useAdminAlerts";
 
 const Admin = () => {
   const { user, loading } = useAuth();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [mfaPassed, setMfaPassed] = useState(false);
+  useAdminAlerts(isAdmin === true && mfaPassed);
 
   useEffect(() => {
     if (!user) return;

@@ -13,6 +13,7 @@ import { BackButton } from "@/components/BackButton";
 import { useLang } from "@/i18n/LanguageProvider";
 import { Eye, EyeOff } from "lucide-react";
 import appLogo from "@/assets/app-logo.png";
+import { signInSchema, signUpSchema } from "@/lib/validation";
 
 const trackAttempt = (email: string, success: boolean) => {
   // Best-effort: failures must not block UX
@@ -32,14 +33,16 @@ const Auth = () => {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    const cleanName = fullName.trim();
-    if (cleanName.length < 2) {
-      return toast({ title: "Please enter your full name", variant: "destructive" });
+    const parsed = signUpSchema.safeParse({ fullName, email, password });
+    if (!parsed.success) {
+      const first = parsed.error.issues[0]?.message ?? "Invalid input";
+      return toast({ title: first, variant: "destructive" });
     }
+    const { fullName: cleanName, email: cleanEmail, password: cleanPw } = parsed.data;
     setBusy(true);
     const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
+      email: cleanEmail,
+      password: cleanPw,
       options: {
         emailRedirectTo: `${window.location.origin}/dashboard`,
         data: { display_name: cleanName, full_name: cleanName },
@@ -47,7 +50,6 @@ const Auth = () => {
     });
     setBusy(false);
     if (error) return toast({ title: error.message, variant: "destructive" });
-    // Persist display_name to profile (the new-user trigger may have used the email prefix)
     if (data.user) {
       await (supabase.from("profiles") as any)
         .update({ display_name: cleanName, last_login_at: new Date().toISOString() })
@@ -59,13 +61,20 @@ const Auth = () => {
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
+    const parsed = signInSchema.safeParse({ email, password });
+    if (!parsed.success) {
+      const first = parsed.error.issues[0]?.message ?? "Invalid input";
+      return toast({ title: first, variant: "destructive" });
+    }
     setBusy(true);
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: parsed.data.email,
+      password: parsed.data.password,
+    });
     setBusy(false);
-    trackAttempt(email, !error);
+    trackAttempt(parsed.data.email, !error);
     if (error) return toast({ title: error.message, variant: "destructive" });
     if (data.user) {
-      // touch last_login asynchronously, don't await
       (supabase as any).rpc("touch_last_login", { _user_id: data.user.id }).then(() => {});
     }
     nav("/dashboard");
@@ -165,7 +174,7 @@ const Auth = () => {
                   <div className="space-y-2">
                     <Label htmlFor="su-pw">{t("password")}</Label>
                     <div className="relative">
-                      <Input id="su-pw" type={showPw ? "text" : "password"} required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} className="pr-10" />
+                      <Input id="su-pw" type={showPw ? "text" : "password"} required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} className="pr-10" />
                       {pwToggle}
                     </div>
                   </div>
