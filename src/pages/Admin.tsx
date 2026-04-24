@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
-import { Loader2, Database, Users, FileText, Image as ImageIcon, ShieldAlert, Sparkles, LifeBuoy, Ban, PauseCircle, CheckCircle2, Megaphone, Rows3, Sprout, Trash2 } from "lucide-react";
+import { Loader2, Database, Users, FileText, Image as ImageIcon, ShieldAlert, Sparkles, LifeBuoy, Ban, PauseCircle, CheckCircle2, Megaphone, Rows3, Sprout, Trash2, AlertTriangle, Activity } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Admin = () => {
@@ -61,8 +61,10 @@ const Admin = () => {
           </div>
 
             <Tabs defaultValue="overview">
-            <TabsList className="grid w-full grid-cols-3 md:grid-cols-5 lg:grid-cols-10">
+            <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 lg:grid-cols-12">
               <TabsTrigger value="overview" className="gap-2"><Sparkles className="h-4 w-4" />Overview</TabsTrigger>
+              <TabsTrigger value="suspicious" className="gap-2"><AlertTriangle className="h-4 w-4" />Suspicious</TabsTrigger>
+              <TabsTrigger value="activity" className="gap-2"><Activity className="h-4 w-4" />Activity</TabsTrigger>
               <TabsTrigger value="rag" className="gap-2"><Database className="h-4 w-4" />RAG</TabsTrigger>
               <TabsTrigger value="refs" className="gap-2"><ImageIcon className="h-4 w-4" />References</TabsTrigger>
               <TabsTrigger value="scans" className="gap-2"><FileText className="h-4 w-4" />Scans</TabsTrigger>
@@ -75,6 +77,8 @@ const Admin = () => {
             </TabsList>
 
             <TabsContent value="overview" className="pt-4"><OverviewTab /></TabsContent>
+            <TabsContent value="suspicious" className="pt-4"><SuspiciousTab /></TabsContent>
+            <TabsContent value="activity" className="pt-4"><ActivityTab /></TabsContent>
             <TabsContent value="rag" className="pt-4"><RagTab /></TabsContent>
             <TabsContent value="refs" className="pt-4"><RefsTab /></TabsContent>
             <TabsContent value="scans" className="pt-4"><ScansTab /></TabsContent>
