@@ -528,4 +528,97 @@ function AuditTab() {
   );
 }
 
+function SuspiciousTab() {
+  const [rows, setRows] = useState<any[]>([]);
+  const [busy, setBusy] = useState<string | null>(null);
+  const load = async () => {
+    const { data } = await (supabase.from("profiles") as any)
+      .select("user_id,display_name,suspicious,suspicious_reason,suspicious_at,account_status,last_login_at,created_at")
+      .eq("suspicious", true)
+      .order("suspicious_at", { ascending: false })
+      .limit(100);
+    setRows(data ?? []);
+  };
+  useEffect(() => { load(); }, []);
+  const moderate = async (uid: string, status: "active" | "suspended" | "banned") => {
+    const reason = status === "active" ? null : window.prompt(`Reason for ${status}?`, "Suspicious activity");
+    if (status !== "active" && !reason) return;
+    setBusy(uid);
+    const patch: any = { account_status: status, moderation_reason: reason, moderated_at: status === "active" ? null : new Date().toISOString() };
+    if (status === "active") { patch.suspicious = false; patch.suspicious_reason = null; }
+    const { error } = await (supabase.from("profiles") as any).update(patch).eq("user_id", uid);
+    setBusy(null);
+    if (error) return toast({ title: "Update failed", description: error.message, variant: "destructive" });
+    toast({ title: `User ${status}` });
+    load();
+  };
+  const clearFlag = async (uid: string) => {
+    setBusy(uid);
+    const { error } = await (supabase.from("profiles") as any).update({ suspicious: false, suspicious_reason: null }).eq("user_id", uid);
+    setBusy(null);
+    if (error) return toast({ title: "Clear failed", description: error.message, variant: "destructive" });
+    load();
+  };
+  return (
+    <Card className="overflow-hidden">
+      <div className="grid grid-cols-12 gap-2 border-b bg-muted/40 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        <span className="col-span-3">User</span><span className="col-span-3">Reason</span><span className="col-span-2">Flagged</span><span className="col-span-1">Status</span><span className="col-span-3">Controls</span>
+      </div>
+      {rows.map((r) => (
+        <div key={r.user_id} className="grid grid-cols-12 items-center gap-2 border-b px-4 py-3 text-sm">
+          <span className="col-span-3 min-w-0">
+            <p className="truncate font-medium">{r.display_name ?? r.user_id.slice(0, 8)}</p>
+            <p className="truncate font-mono text-[10px] text-muted-foreground">{r.user_id}</p>
+            {r.last_login_at && <p className="text-[10px] text-muted-foreground">Last login {new Date(r.last_login_at).toLocaleString()}</p>}
+          </span>
+          <span className="col-span-3 truncate text-xs">{r.suspicious_reason ?? "—"}</span>
+          <span className="col-span-2 text-[11px]">{r.suspicious_at ? new Date(r.suspicious_at).toLocaleString() : "—"}</span>
+          <span className="col-span-1"><Badge variant={r.account_status === "active" ? "secondary" : "destructive"}>{r.account_status}</Badge></span>
+          <span className="col-span-3 flex flex-wrap gap-2">
+            <Button size="sm" variant="outline" className="h-8" disabled={busy === r.user_id} onClick={() => clearFlag(r.user_id)}>Clear flag</Button>
+            <Button size="sm" variant="secondary" className="h-8 gap-1" disabled={busy === r.user_id} onClick={() => moderate(r.user_id, "suspended")}><PauseCircle className="h-3.5 w-3.5" />Suspend</Button>
+            <Button size="sm" variant="destructive" className="h-8 gap-1" disabled={busy === r.user_id} onClick={() => moderate(r.user_id, "banned")}><Ban className="h-3.5 w-3.5" />Ban</Button>
+          </span>
+        </div>
+      ))}
+      {!rows.length && <p className="p-6 text-center text-sm text-muted-foreground">No suspicious users right now. 🌱</p>}
+    </Card>
+  );
+}
+
+function ActivityTab() {
+  const [rows, setRows] = useState<any[]>([]);
+  const [filter, setFilter] = useState("");
+  useEffect(() => {
+    (async () => {
+      const { data } = await (supabase as any).from("user_activity_log")
+        .select("id,user_id,action,endpoint,status,meta,created_at,ip")
+        .order("created_at", { ascending: false }).limit(200);
+      setRows(data ?? []);
+    })();
+  }, []);
+  const filtered = rows.filter((r) => !filter || r.action.includes(filter) || (r.user_id ?? "").includes(filter));
+  return (
+    <div className="space-y-3">
+      <Input placeholder="Filter by action or user id…" value={filter} onChange={(e) => setFilter(e.target.value)} className="max-w-sm" />
+      <Card className="overflow-hidden">
+        <div className="grid grid-cols-12 gap-2 border-b bg-muted/40 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          <span className="col-span-2">When</span><span className="col-span-2">User</span><span className="col-span-2">Action</span><span className="col-span-2">Endpoint</span><span className="col-span-1">Status</span><span className="col-span-3">Meta</span>
+        </div>
+        {filtered.map((r) => (
+          <div key={r.id} className="grid grid-cols-12 gap-2 border-b px-4 py-2 text-xs">
+            <span className="col-span-2">{new Date(r.created_at).toLocaleString()}</span>
+            <span className="col-span-2 truncate font-mono text-[10px]">{r.user_id?.slice(0, 8) ?? "—"}</span>
+            <span className="col-span-2 font-semibold">{r.action}</span>
+            <span className="col-span-2 truncate">{r.endpoint ?? "—"}</span>
+            <span className="col-span-1"><Badge variant={r.status >= 400 ? "destructive" : "secondary"}>{r.status ?? "—"}</Badge></span>
+            <span className="col-span-3 truncate font-mono text-[10px]">{JSON.stringify(r.meta)}</span>
+          </div>
+        ))}
+        {!filtered.length && <p className="p-4 text-sm text-muted-foreground">No activity yet.</p>}
+      </Card>
+    </div>
+  );
+}
+
 export default Admin;
