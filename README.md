@@ -1,137 +1,296 @@
-🌱 AgriPulse
+Project: AgriPulse
 
-Scan your crop. Get treatment in seconds.
+Scan your crop. Get treatment. Make better decisions.
 
-AgriPulse is a mobile-first AI-powered web app that helps farmers detect crop diseases, plan better crops, and make fast, data-driven decisions using images, soil inputs, and real-time conditions.
+AgriPulse is a mobile-first agritech intelligence platform built for real farming conditions. It helps farmers diagnose crop diseases, plan better crops, learn modern farming methods, and make faster, data-backed decisions using AI, structured datasets, and practical field workflows.
 
-🚀 Features
-📸 Crop Disease Detection
-Snap a photo → get instant diagnosis
-AI-powered detection (multimodal)
-Confidence score + severity level
-Visual highlighting of infected areas
-🧪 Actionable Treatment Plans
-Chemical recommendations (dosage included)
-Organic alternatives
-Clear warnings (what NOT to do)
-🌾 Crop Planning (Smart Recommendations)
-Based on:
-Soil inputs (NPK, pH, etc.)
+Overview
+
+AgriPulse is designed to solve one core problem:
+
+Farmers often make high-risk decisions with slow, fragmented, or unreliable information.
+
+AgriPulse brings diagnosis, planning, learning, and support into one unified system built for low-connectivity, real-world agricultural use.
+
+This is not just a crop scanner.
+
+AgriPulse is a farmer decision-support platform.
+
+Problem Statement
+
+Farmers face recurring operational problems that directly affect yield, cost, and crop health:
+
+Crop diseases are often diagnosed too late or incorrectly
+Crop planning is based on habit, not field conditions
+Modern farming knowledge is difficult to access and poorly structured
+Most agriculture tools fail in low-network field conditions
+Existing systems lack a proper support and feedback loop
+
+AgriPulse is built to solve these problems with speed, clarity, and reliability.
+
+Core Features
+AI Crop Disease Diagnosis
+
+Upload a crop image and receive:
+
+Disease identification
+Confidence score
+Severity level
+Chemical treatment
+Organic alternative
+Action warnings
+
+Includes image-based diagnosis, reference matching, and structured treatment cards.
+
+Crop Planning Engine
+
+Plan the next crop using:
+
+Soil inputs
 Weather conditions
-Crop history
-Outputs:
-Top 3 recommended crops
+Previous crop
+Irrigation conditions
+
+Returns:
+
+Top 3 crop recommendations
 Suitability score
 Risk level
+Fertilizer guidance
+Water requirement
 Profit estimate
-Water & fertilizer guidance
-🗂️ My Farm Timeline
-Track every scan over time
-Vertical history view
-Detect trends (improving / worsening)
-🔔 Smart Alerts
-Disease risk warnings
-Weather-based notifications
-🧮 Spray Calculator
-Enter land size → get exact chemical quantity
-🤖 AI Assistant (Controlled Chatbot)
-Helps navigate the app
+Mixed Crop Recommendation System
+
+A dedicated module for intercropping and mixed crop intelligence.
+
+Provides:
+
+Best crop combinations
+Compatibility score
+Soil improvement benefits
+Pest reduction benefits
+Dual-income opportunities
+
+Built using structured datasets and rule-based logic informed by practical mixed-crop systems.
+
+Farming Methods Gallery
+
+A visual knowledge system for modern agriculture practices.
+
+Includes:
+
+Integrated Farming
+Intercropping
+Organic Farming
+Agroforestry
+
+Each section contains image-based learning, practical examples, and short benefit-driven explanations.
+
+My Farm Timeline
+
+A visual history of previous scans and crop conditions.
+
+Tracks:
+
+Scan image
+Crop type
+Diagnosis
+Date
+Trend direction
+
+Helps farmers monitor field changes over time.
+
+Spray Calculator
+
+A utility tool that calculates exact chemical quantity based on land size.
+
+Alerts System
+
+In-app alerts for:
+
+Disease risk
+Weather warnings
+Crop alerts
+Admin announcements
+Controlled AI Assistant
+
+A bounded AI assistant that:
+
+Helps users navigate the platform
 Explains results
-Triggers features (not free-form AI)
-🎫 Ticket System (Feedback Loop)
-Report wrong diagnosis or bugs
-Chat-style support threads
-Email notifications + unread badges
-📢 Admin Announcements
-In-app popup notifications
-Internal navigation (no external redirects)
-Used for alerts, schemes, updates
-📶 Offline Support
-Capture scans without internet
-Auto-sync when back online
-🎨 UI/UX Highlights
-Mobile-first design
-Large, thumb-friendly buttons
-Visual-first (icons > text)
-Fast, clean, minimal interface
-Subtle animations (no heavy 3D)
-Built for low-end devices
-⚙️ Tech Stack
+Triggers product actions
 
+The assistant is intentionally restricted to verified system data and does not provide free-form hallucinated outputs.
+
+Ticket & Feedback System
+
+Users can report:
+
+Wrong diagnosis
+Bugs
+Feature issues
+
+Includes:
+
+Screenshot support
+Priority tagging
+Admin reply thread
+Unread badges
+Email notifications
+Admin Console
+
+Administrative controls for:
+
+User monitoring
+Suspicious activity review
+Scan logs
+Announcements
+Gallery content
+Mixed crop datasets
+References
+Ticket management
+Offline Support
+
+AgriPulse supports offline-first usage:
+
+Save scans locally
+Queue requests offline
+Auto-sync when online
+
+Built for remote and low-connectivity farm environments.
+
+Security & Reliability
+
+AgriPulse includes production-grade platform safeguards:
+
+Strict authenticated access (no guest feature access)
+Full Name required at signup
+Per-user rate limiting
+Suspicious activity detection
+Admin abuse monitoring
+Input sanitization (XSS protection)
+CSRF protection
+SQL injection-safe queries
+Auto logout on inactivity
+Sign out everywhere session control
+System Architecture
+
+AgriPulse is built around four core layers:
+
+1. Decision Layer
+
+Deterministic logic for recommendations and structured outputs.
+
+Includes:
+
+Crop planning engine
+Mixed crop recommendation engine
+Rules + scoring systems
+2. AI Layer
+
+Responsible for interpretation and explanation.
+
+Includes:
+
+Disease diagnosis
+Result explanation
+Controlled assistant
+
+AI is used for interpretation, not uncontrolled decision-making.
+
+3. Knowledge Layer
+
+Structured agricultural content and reference systems.
+
+Includes:
+
+Farming methods gallery
+Reference image datasets
+Crop and treatment content
+4. Control Layer
+
+Platform protection, moderation, and system integrity.
+
+Includes:
+
+Rate limiting
+Admin monitoring
+Suspicious activity controls
+Logs and alerts
+Tech Stack
 Frontend
-
-React + Tailwind CSS
-
+React
+Tailwind CSS
+Progressive Web App (PWA)
 Backend
-
-Firebase / Supabase
-
+Supabase / Firebase
 AI
-
 Gemini (Pro + Flash)
+RAG pipeline
+Intelligence
+k-NN recommendation engine
+Rule-based scoring systems
+Integrations
+Weather API
+WhatsApp community access
+Email notifications
+Product Design Principles
 
-Data
+AgriPulse is designed around:
 
-Crop dataset (CSV → k-NN engine)
+Mobile-first interactions
+Low cognitive load
+Fast field usability
+Visual-first learning
+Minimal text
+Low-bandwidth performance
+Strong admin control
+Practical outputs over generic AI responses
+What Makes AgriPulse Different
 
-Other
+Most agriculture tools are either:
 
-Weather API (auto-fetch)
-Local storage (offline queue)
-🧠 System Architecture
-Crop Recommendation Engine
-k-NN algorithm for ranking crops
-Deterministic outputs
-AI used only for explanation (not decision-making)
-AI Design Principles
-No hallucination allowed
-Responses grounded in:
-App data
-Verified datasets
-Fallback: “Not enough data”
-🚫 Not Included (Yet)
+crop scanners
+content apps
+marketplaces
 
-These are intentionally deferred:
+AgriPulse combines:
 
-Video-based diagnosis
-Soil PDF OCR parsing
-Disease heatmaps
+diagnosis
+planning
+farming education
+support
+monitoring
+system protection
 
-Focus is on:
-👉 Speed, reliability, and usability
+into one operational platform.
 
-📊 Performance Goals
-Diagnosis in < 30 seconds
-Dashboard load < 2 seconds
-Works on low-end mobile devices
-🔒 Reliability & Safety
-Input validation across all flows
-Graceful error handling
-No empty or broken states
-🎯 Vision
-
-AgriPulse is built to be:
-
-Simple enough for any farmer
-Fast enough for real-world use
-Smart enough to improve over time
-⚡ Getting Started
+Performance Goals
+Dashboard load under 2 seconds
+Diagnosis response under 30 seconds
+Optimized for low-end mobile devices
+Stable in low-connectivity environments
+Getting Started
 git clone https://github.com/your-username/agripulse.git
 cd agripulse
 npm install
 npm run dev
-🤝 Contributing
+Roadmap
 
-Pull requests are welcome.
-Focus on:
+Planned future enhancements:
 
-Performance
-Simplicity
-Real-world usability
-📜 License
+Voice-first field commands
+Soil PDF OCR parsing
+Disease heatmaps
+Market price integration
+Advanced multilingual voice assistant
+Emergency SOS trigger
+License
 
 MIT License
 
-💡 Final Note
+Final Note
 
-This is not just another AI app.
+AgriPulse is built for one thing:
+
+Helping farmers make better decisions in real conditions, with less guesswork and faster action.
