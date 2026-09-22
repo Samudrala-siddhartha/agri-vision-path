@@ -233,6 +233,144 @@ export type Database = {
         }
         Relationships: []
       }
+      farmer_locations: {
+        Row: {
+          address_line: string | null
+          created_at: string
+          id: string
+          latitude: number | null
+          longitude: number | null
+          pincode: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address_line?: string | null
+          created_at?: string
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          pincode?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address_line?: string | null
+          created_at?: string
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          pincode?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      farmer_payment_profiles: {
+        Row: {
+          created_at: string
+          id: string
+          payout_name: string | null
+          qr_image_url: string | null
+          updated_at: string
+          upi_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          payout_name?: string | null
+          qr_image_url?: string | null
+          updated_at?: string
+          upi_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          payout_name?: string | null
+          qr_image_url?: string | null
+          updated_at?: string
+          upi_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      farmer_profiles: {
+        Row: {
+          approx_latitude: number | null
+          approx_longitude: number | null
+          city: string | null
+          completed_orders: number
+          created_at: string
+          description: string | null
+          farm_image_url: string | null
+          farmer_name: string
+          farmer_status: Database["public"]["Enums"]["farmer_status"]
+          id: string
+          locality: string
+          production_method: Database["public"]["Enums"]["production_method"]
+          profile_image_url: string | null
+          rating: number
+          rating_count: number
+          review_note: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          state: string | null
+          submitted_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          approx_latitude?: number | null
+          approx_longitude?: number | null
+          city?: string | null
+          completed_orders?: number
+          created_at?: string
+          description?: string | null
+          farm_image_url?: string | null
+          farmer_name: string
+          farmer_status?: Database["public"]["Enums"]["farmer_status"]
+          id?: string
+          locality: string
+          production_method?: Database["public"]["Enums"]["production_method"]
+          profile_image_url?: string | null
+          rating?: number
+          rating_count?: number
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          state?: string | null
+          submitted_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          approx_latitude?: number | null
+          approx_longitude?: number | null
+          city?: string | null
+          completed_orders?: number
+          created_at?: string
+          description?: string | null
+          farm_image_url?: string | null
+          farmer_name?: string
+          farmer_status?: Database["public"]["Enums"]["farmer_status"]
+          id?: string
+          locality?: string
+          production_method?: Database["public"]["Enums"]["production_method"]
+          profile_image_url?: string | null
+          rating?: number
+          rating_count?: number
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          state?: string | null
+          submitted_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       farming_method_images: {
         Row: {
           caption: string | null
@@ -378,6 +516,119 @@ export type Database = {
           user_agent?: string | null
         }
         Relationships: []
+      }
+      marketplace_account_profiles: {
+        Row: {
+          account_type: Database["public"]["Enums"]["marketplace_account_type"]
+          created_at: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          account_type: Database["public"]["Enums"]["marketplace_account_type"]
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          account_type?: Database["public"]["Enums"]["marketplace_account_type"]
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      marketplace_categories: {
+        Row: {
+          active: boolean
+          created_at: string
+          icon: string | null
+          id: string
+          name_en: string
+          name_hi: string | null
+          name_te: string | null
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          icon?: string | null
+          id?: string
+          name_en: string
+          name_hi?: string | null
+          name_te?: string | null
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          icon?: string | null
+          id?: string
+          name_en?: string
+          name_hi?: string | null
+          name_te?: string | null
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      marketplace_products: {
+        Row: {
+          active: boolean
+          category_id: string
+          created_at: string
+          default_unit: string
+          emoji: string | null
+          id: string
+          name_en: string
+          name_hi: string | null
+          name_te: string | null
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          category_id: string
+          created_at?: string
+          default_unit?: string
+          emoji?: string | null
+          id?: string
+          name_en: string
+          name_hi?: string | null
+          name_te?: string | null
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          category_id?: string
+          created_at?: string
+          default_unit?: string
+          emoji?: string | null
+          id?: string
+          name_en?: string
+          name_hi?: string | null
+          name_te?: string | null
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketplace_products_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace_categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       mixed_crop_rules: {
         Row: {
@@ -765,6 +1016,10 @@ export type Database = {
         Returns: boolean
       }
       evaluate_suspicious: { Args: { _user_id: string }; Returns: boolean }
+      get_account_type: {
+        Args: { _user_id: string }
+        Returns: Database["public"]["Enums"]["marketplace_account_type"]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -773,6 +1028,7 @@ export type Database = {
         Returns: boolean
       }
       is_account_active: { Args: { _user_id: string }; Returns: boolean }
+      is_approved_farmer: { Args: { _user_id: string }; Returns: boolean }
       match_rag_documents: {
         Args: {
           match_count?: number
@@ -832,6 +1088,9 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      farmer_status: "pending" | "approved" | "rejected" | "suspended"
+      marketplace_account_type: "farmer" | "consumer"
+      production_method: "organic" | "farmer_declared_organic" | "conventional"
       ticket_category: "bug" | "wrong_diagnosis" | "feature" | "other"
       ticket_priority: "low" | "normal" | "high"
       ticket_status: "open" | "in_progress" | "resolved" | "closed"
@@ -963,6 +1222,9 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      farmer_status: ["pending", "approved", "rejected", "suspended"],
+      marketplace_account_type: ["farmer", "consumer"],
+      production_method: ["organic", "farmer_declared_organic", "conventional"],
       ticket_category: ["bug", "wrong_diagnosis", "feature", "other"],
       ticket_priority: ["low", "normal", "high"],
       ticket_status: ["open", "in_progress", "resolved", "closed"],
