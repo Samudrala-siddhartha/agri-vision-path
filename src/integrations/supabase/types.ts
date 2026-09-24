@@ -1011,6 +1011,43 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_review_farmer: {
+        Args: {
+          _farmer_id: string
+          _review_note?: string
+          _status: Database["public"]["Enums"]["farmer_status"]
+        }
+        Returns: {
+          approx_latitude: number | null
+          approx_longitude: number | null
+          city: string | null
+          completed_orders: number
+          created_at: string
+          description: string | null
+          farm_image_url: string | null
+          farmer_name: string
+          farmer_status: Database["public"]["Enums"]["farmer_status"]
+          id: string
+          locality: string
+          production_method: Database["public"]["Enums"]["production_method"]
+          profile_image_url: string | null
+          rating: number
+          rating_count: number
+          review_note: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          state: string | null
+          submitted_at: string
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "farmer_profiles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       check_rate_limit: {
         Args: { _key: string; _max: number; _window_seconds: number }
         Returns: boolean
